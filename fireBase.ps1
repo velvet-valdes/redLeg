@@ -8,8 +8,7 @@ foreach($client in $HostList )
 {
     
     write-host "Sending command to.. $client"
-    $cmdstring = “invoke-command -computername $client -scriptblock { If(test-path $opsDir) { write-host $client ‘Operations Directory = REMOVED’ ; Remove-Item -path $opsDir -Recurse -Force } Else { write-host 'Operations Directory = NON-EXISTANT' }}”
-
+    $cmdstring = "invoke-command -computername $client -FilePath C:\Users\Administrator\Documents\WindowsPowerShell\redleg\advancedParty.ps1"
     $scriptblock = [scriptblock]::Create($cmdstring)
 
     start-process powershell -argumentlist "-noexit -command $Scriptblock"
