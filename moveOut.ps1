@@ -8,7 +8,7 @@ foreach($client in $HostList )
 {
     
     write-host "Sending command to.. $client"
-    $cmdstring = "invoke-command -computername $client -scriptblock {write-host $client 'MOVING OUT!' ; Remove-Item -path $opsDir -Recurse -Force}"
+    $cmdstring = "invoke-command -computername $client -scriptblock {write-host $client 'MOVING OUT!' ; If(test-path $opsDir) { Remove-Item -path $opsDir -Recurse -Force }}"
     $scriptblock = [scriptblock]::Create($cmdstring)
 
     start-process powershell -argumentlist "-noexit -command $Scriptblock"
