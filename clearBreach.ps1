@@ -9,7 +9,7 @@ foreach($client in $HostList )
 
 }
 
-# Lets close out all of our powershellz!
+# Close all open powershell windows other than this one
 Get-Process -Name powershell | Where-Object -FilterScript {$_.Id -ne $PID} | Stop-Process -PassThru
 
 # Quick hack for user input to keep window open
