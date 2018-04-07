@@ -9,7 +9,7 @@ $opsDir = Read-Host "Enter Target Operations Directory Path"
 $redLeg = Read-Host "Enter redLeg path"
 
 # Concatenate variables
-$configPath = "$opsDir\fireDirectionalControl.json"
+$configPath = "$redLeg\fireDirectionalControl.json"
 $advanceParty ="$redLeg\advanceParty.ps1"
 
 # Create hashtable out of user input
