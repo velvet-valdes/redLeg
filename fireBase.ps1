@@ -1,17 +1,25 @@
-﻿# Get the needed variables from the user
+﻿# fireBase - emplace cannons and form the gun line
 
 Write-Host "fireBase `n"
-$filterTarget = Read-Host "Enter Filter String"
-$searchBase00 = Read-Host "Enter Search Base OU"
-$searchBase01 = Read-Host "Enter Search Base DC"
-$searchBase02 = Read-Host "Enter Search Base DC"
-$opsDir = Read-Host "Enter Operations Directory Path"
-$advanceParty = Read-Host "Enter Shell Script Path"
 
 
-# Concatenate the search base
+# Load the fireDirectionalControl JSON config file into an object
 
+$missionParameters = (Get-Content -Raw -Path fireDirectionalControl.json | ConvertFrom-Json)
+
+
+# Concatenate the search base 
+
+$searchBase00 = $missionParameters.search[0]
+$searchBase01 = $missionParameters.search[1]
+$searchBase02 = $missionParameters.search[2]
 $searchBase = "OU=$searchBase00, DC=$searchBase01, DC=$searchBase02"
+
+# Set variables from the newly created object
+
+$opsDir = $missionParameters.ops
+$filterTarget = $missionParameters.target
+$advanceParty = $missionParameters.ap
 
 
 # Echo user input varibles
