@@ -1,6 +1,8 @@
-﻿# Get the needed variables from the user
+﻿Write-Host "gridCoordinates `n"
 
-Write-Host "redLeg JSON Variable Creator `n"
+
+# Get the needed input from the user
+
 $filterTarget = Read-Host "Enter Active Directory Filter String"
 $searchBase00 = Read-Host "Enter Active Directory Search Base OU"
 $searchBase01 = Read-Host "Enter Active Directory Search Base DC prefix"
