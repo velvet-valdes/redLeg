@@ -1,16 +1,20 @@
-﻿# Get the needed variables from the user
+﻿Write-Host "fireMission `n"
 
-Write-Host "fireMission `n"
-$filterTarget = Read-Host "Enter Filter String"
-$searchBase00 = Read-Host "Enter Search Base OU"
-$searchBase01 = Read-Host "Enter Search Base DC"
-$searchBase02 = Read-Host "Enter Search Base DC"
-$opsDir = Read-Host "Enter Operations Directory Path"
+# Load the fireDirectionalControl JSON config file into an object
+$missionParameters = (Get-Content -Raw -Path fireDirectionalControl.json | ConvertFrom-Json)
 
 
 # Concatenate the search base
 
+$searchBase00 = $missionParameters.search[0]
+$searchBase01 = $missionParameters.search[1]
+$searchBase02 = $missionParameters.search[2]
 $searchBase = "OU=$searchBase00, DC=$searchBase01, DC=$searchBase02"
+
+# Parse and load variables from JSON
+
+$filterTarget = $missionParameters.target
+$opsDir = $missionParameters.ops
 
 
 # Echo user input varibles
