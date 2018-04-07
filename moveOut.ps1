@@ -1,5 +1,6 @@
 ﻿# Get the needed variables from the user
 
+Write-Host "moveOut `n"
 $filterTarget = Read-Host "Enter Filter String"
 $searchBase00 = Read-Host "Enter Search Base OU"
 $searchBase01 = Read-Host "Enter Search Base DC"
@@ -7,8 +8,13 @@ $searchBase02 = Read-Host "Enter Search Base DC"
 $opsDir = Read-Host "Enter Operations Directory Path"
 $searchBase = "OU=$searchBase00, DC=$searchBase01, DC=$searchBase02"
 
+
+# Echo user input varibles
+
+Write-Host "Current Parameters `n"
 Write-Host $filterTarget
 Write-Host $searchBase
+Read-Host -Prompt "Press Enter to continue"
 
 
 # Get the hosts in the search base and filter based on user input. Store them in a host list.
