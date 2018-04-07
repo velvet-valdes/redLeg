@@ -1,7 +1,7 @@
 ﻿Write-Host "clearBreach `n"
 
-# Load the fireDirectionalControl JSON config file into an object note that it is being loaded from the 
-# local redLeg directory.  Scripts are intended to be launched from the redLeg location.
+
+# Load the fireDirectionalControl JSON config file into an object
 
 $missionParameters = (Get-Content -Raw -Path fireDirectionalControl.json | ConvertFrom-Json) 
 
