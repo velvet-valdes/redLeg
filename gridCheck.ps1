@@ -1,8 +1,9 @@
-﻿# Parse the fireDirectionalControl file to load the JSON into an object
-
-$missionParameters = (Get-Content -Raw -Path C:\Users\Administrator\Documents\WindowsPowerShell\redleg\fireDirectionalControl.json | ConvertFrom-Json) #don't forget to un-hardcode that path!
+﻿Write-Host "gridCheck `n"
 
 
+# Load the fireDirectionalControl JSON config file into an object
+
+$missionParameters = (Get-Content -Raw -Path fireDirectionalControl.json | ConvertFrom-Json) 
 # Concatenate the search base 
 
 $searchBase00 = $missionParameters.search[0]
