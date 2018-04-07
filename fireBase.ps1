@@ -31,6 +31,7 @@ $HostList=(Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $sear
 # Cycle through the clients in the host list and call the advanceParty script to be executed on them
 
 foreach($client in $HostList )
+
 {
     
     write-host "Sending command to.. $client"
@@ -41,7 +42,10 @@ foreach($client in $HostList )
 }
 
 # Prompt user to close windows
+
 Read-Host -Prompt "Press Enter to exit all other shells"
 
+
 # Close all open powershell windows other than this one
+
 Get-Process -Name powershell | Where-Object -FilterScript {$_.Id -ne $PID} | Stop-Process -PassThru

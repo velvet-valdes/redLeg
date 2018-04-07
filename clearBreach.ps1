@@ -28,6 +28,7 @@ $HostList=(Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $sear
 # Cycle through the clients in the host list sequentially and terminate xmr-stak.
 
 foreach($client in $HostList )
+
 {
     
     write-host "Sending command to $client"
@@ -35,8 +36,12 @@ foreach($client in $HostList )
 
 }
 
+
 # Close all open powershell windows other than this one
+
 Get-Process -Name powershell | Where-Object -FilterScript {$_.Id -ne $PID} | Stop-Process -PassThru
 
+
 # Quick hack for user input to keep window open
+
 Read-Host -Prompt "Press Enter to exit"

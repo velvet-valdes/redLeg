@@ -25,6 +25,7 @@ $HostList=(Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $sear
 # Cycle through the clients in the host list and recursively remove the operations directory
 
 foreach($client in $HostList )
+
 {
     
     write-host "Sending command to.. $client"
