@@ -16,7 +16,7 @@ Write-Host $searchBase
 $HostList=(Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $searchBase).name
 
 
-# Cycle through the hosts in the host list and recursively remove the operations directory
+# Cycle through the clients in the host list and recursively remove the operations directory
 
 foreach($client in $HostList )
 {
