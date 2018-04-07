@@ -16,6 +16,7 @@ $searchBase = "OU=$searchBase00, DC=$searchBase01, DC=$searchBase02"
 # Parse and load variables from JSON
 
 $filterTarget = $missionParameters.target
+$opsDir = $missionParameters.ops
 
 
 # Echo user input varibles
