@@ -1,15 +1,21 @@
-﻿# Get the needed variables from the user
+﻿Write-Host "reinitGunline `n"
 
-Write-Host "reinitGunline `n"
-$filterTarget = Read-Host "Enter Filter String"
-$searchBase00 = Read-Host "Enter Search Base OU"
-$searchBase01 = Read-Host "Enter Search Base DC"
-$searchBase02 = Read-Host "Enter Search Base DC"
+
+# Load the fireDirectionalControl JSON config file into an object
+
+$missionParameters = (Get-Content -Raw -Path fireDirectionalControl.json | ConvertFrom-Json) 
 
 
 # Concatenate the search base
 
+$searchBase00 = $missionParameters.search[0]
+$searchBase01 = $missionParameters.search[1]
+$searchBase02 = $missionParameters.search[2]
 $searchBase = "OU=$searchBase00, DC=$searchBase01, DC=$searchBase02"
+
+# Parse and load variables from JSON
+
+$filterTarget = $missionParameters.target
 
 
 # Echo user input varibles
