@@ -25,7 +25,7 @@ Read-Host -Prompt "Press Enter to continue"
 $HostList=(Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $searchBase).name
 
 
-# Cycle through the clients in the host list and restart them sequentially.
+# Cycle through the clients in the host list sequentially and restart them.
 
 foreach($client in $HostList )
 {
