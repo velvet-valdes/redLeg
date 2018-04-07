@@ -11,7 +11,7 @@ $missionParameters = (Get-Content -Raw -Path fireDirectionalControl.json | Conve
 $searchBase00 = $missionParameters.search[0]
 $searchBase01 = $missionParameters.search[1]
 $searchBase02 = $missionParameters.search[2]
-$searchBase = "DC=$searchBase00, OU=$searchBase01, OU=$searchBase02"
+$searchBase = "OU=$searchBase00, DC=$searchBase01, DC=$searchBase02"
 
 # Set variables from the newly created object
 
