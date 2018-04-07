@@ -1,6 +1,8 @@
 ﻿Write-Host "fireMission `n"
 
+
 # Load the fireDirectionalControl JSON config file into an object
+
 $missionParameters = (Get-Content -Raw -Path fireDirectionalControl.json | ConvertFrom-Json)
 
 
