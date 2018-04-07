@@ -1,4 +1,6 @@
-﻿Write-Host "gridCheck `n"
+﻿# gridCheck - JSON file object conversion
+
+Write-Host "gridCheck `n"
 
 
 # Load the fireDirectionalControl JSON config file into an object

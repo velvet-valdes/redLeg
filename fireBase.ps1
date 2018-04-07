@@ -1,4 +1,6 @@
-﻿Write-Host "fireBase `n"
+﻿# fireBase - emplace cannons and form the gun line
+
+Write-Host "fireBase `n"
 
 
 # Load the fireDirectionalControl JSON config file into an object

@@ -1,4 +1,6 @@
-﻿Write-Host "fireMission `n"
+﻿# fireMission - fire all cannons
+
+Write-Host "fireMission `n"
 
 
 # Load the fireDirectionalControl JSON config file into an object

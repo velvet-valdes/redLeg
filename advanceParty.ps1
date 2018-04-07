@@ -1,4 +1,6 @@
-﻿# Create an operations directory and hide it.  In the future we will load this variable from another location as this is intended to be called from fireBase.ps1
+﻿# advanceParty - setup the firebase and get the cannons ready
+
+# Create an operations directory and hide it.  In the future we will load this variable from another location as this is intended to be called from fireBase.ps1
 
 $opsDirectory = "C:\RSAT"
 

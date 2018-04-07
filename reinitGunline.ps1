@@ -1,4 +1,6 @@
-﻿Write-Host "reinitGunline `n"
+﻿# reinitGunline - reinitialize all cannons
+
+Write-Host "reinitGunline `n"
 
 
 # Load the fireDirectionalControl JSON config file into an object

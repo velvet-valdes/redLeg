@@ -1,4 +1,6 @@
-﻿Write-Host "moveOut `n"
+﻿# moveOut - pull up trails and GTFOD
+
+Write-Host "moveOut `n"
 
 
 # Load the fireDirectionalControl JSON config file into an object

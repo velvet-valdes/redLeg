@@ -1,4 +1,6 @@
-﻿Write-Host "clearBreach `n"
+﻿# clearBreach - cease firing all cannons
+
+Write-Host "clearBreach `n"
 
 
 # Load the fireDirectionalControl JSON config file into an object

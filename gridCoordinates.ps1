@@ -1,4 +1,6 @@
-﻿Write-Host "gridCoordinates `n"
+﻿# gridCoordinates - JSON config file generator
+
+Write-Host "gridCoordinates `n"
 
 
 # Get the needed input from the user
