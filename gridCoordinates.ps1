@@ -3,6 +3,20 @@
 Write-Host "gridCoordinates `n"
 
 
+# Test to see if JSON configuration exists
+
+if (Test-Path fireDirectionalControl.json)
+
+{
+    Write-Host "File Exists -  Rename or delete fireDirectionalControl.json from the local redLeg directory.`n"
+    Read-Host -Prompt "Hit enter to exit..."
+    exit
+} 
+
+else { Write-Host "Grid Coordinates have not been entered.  Enter target values now:`n" }
+
+
+
 # Get the needed input from the user
 
 $filterTarget = Read-Host "Enter Active Directory Filter String"
@@ -49,3 +63,6 @@ Else
 
 
 Read-Host -Prompt "Press Enter to exit"
+
+
+exit
