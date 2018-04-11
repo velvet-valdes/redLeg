@@ -1,4 +1,4 @@
-###### redLeg
+# redLeg
 The redLeg project aims to facilitate control of xmr-stak miners in an Active Directory environment.  redLeg is a reference to the Field Artillery, King of Battle.
 
 ## Getting Started
@@ -26,8 +26,12 @@ Invoking reinitGunline.ps1 loops through each cannon in the gun line and restart
 When its time to move the gun line into a new position, invoking move out will cycle through the cannons in the gun line and remove the emplaced cannons.
 
 ## Example usage
+```
 .\fireMission
+```
+```
 .\gridCoordinates
+```
 
 ## License
 This project is licensed under the unlicense.
