@@ -4,50 +4,44 @@ Write-Host "fireMission `n"
 
 
 # Test to see if JSON configuration exists
-
-if (!(Test-Path fireDirectionalControl.json))
+$fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
+if (!(Test-Path $fireDirectionalControl))
 
 {
 
 Write-Host "WARNING - !!MISSION COORDINATES NOT FOUND!! - WARNING`n"
 Write-Host "Aborting attempted command...`n"
 Write-Host `n
-Invoke-Expression -Command .\gridCoordinates.ps1
+Invoke-Expression "& ${psscriptroot}\gridCoordinates.ps1"
 
 }
 
-
 # Load the fireDirectionalControl JSON config file into an object
 
-$missionParameters = (Get-Content -Raw -Path fireDirectionalControl.json | ConvertFrom-Json)
+$missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
 
 
-# Concatenate the search base
-
-$searchBase00 = $missionParameters.search[0]
-$searchBase01 = $missionParameters.search[1]
-$searchBase02 = $missionParameters.search[2]
-$searchBase = "OU=$searchBase00, DC=$searchBase01, DC=$searchBase02"
-
+# Pull the search base
+$searchbase = $missionParameters.search
+ 
 # Parse and load variables from JSON
-
 $filterTarget = $missionParameters.target
 $opsDir = $missionParameters.ops
 
 
 # Echo user input varibles
-
-Write-Host "Current Parameters `n"
-Write-Host $filterTarget
-Write-Host $searchBase
-Write-Host $opsDir
+Write-Host "Current Parameters: `n" -fore Yellow
+Write-Host "Target Filter: "$filterTarget `n
+Write-Host "Search Base: "
+$searchBase | FT
+Write-Host "Ops Directory: " $opsDir `n
 Read-Host -Prompt "Press Enter to continue"
 
 
 # Get the hosts in the search base and filter based on user input. Store them in a host list.
-
-$HostList=(Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $searchBase).name
-
+$HostList= $searchbase | Foreach{Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $_.distinguishedname} | select Name
+write-host "Here's the hostlist: "
+$hostlist | FT
 
 # Cycle through the clients in the host list and launch xmr-stak
 

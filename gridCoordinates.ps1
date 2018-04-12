@@ -20,9 +20,45 @@ else { Write-Host "Grid Coordinates have not been entered.  Enter target values 
 # Get the needed input from the user
 
 $filterTarget = Read-Host "Enter Active Directory Filter String"
-$searchBase00 = Read-Host "Enter Active Directory Search Base OU"
-$searchBase01 = Read-Host "Enter Active Directory Search Base DC prefix"
-$searchBase02 = Read-Host "Enter Active Directory Search Base DC suffix"
+
+#OU searchbase input
+$searchbase = @()
+
+
+#Dynamically create a menu of options, keep adding searchbases until user is done.
+$searchcontinue = "null"
+While ("yes","null" -contains $searchcontinue)
+{
+$menu = @{}
+$OUhash = @{} 
+$OUhash = Get-ADObject -Filter  'ObjectClass -eq "organizationalunit"’ | ? {$searchbase.name -notcontains $_.name} | select Name, DistinguishedName
+
+Write-Host "The following are available OU's to search, and that you have not already selected." `n
+for ($i=1;$i -le $OUhash.count; $i++) {
+    Write-Host "$i. $($OUhash[$i-1].name)"
+    $menu.Add($i,($OUhash[$i-1].name))
+    }
+
+#Ask user for first choice
+[int]$ans = Read-Host `n 'Enter selection'
+$searchbase += $OUhash[$ans-1]
+
+Write-host `n 'You have added '-NoNewline
+Write-host ($OUhash[$ans-1].name) -fore yellow -NoNewline
+Write-host ' OU to the searchbase.'
+Write-host `n 'Add another OU to searchbase?' -nonewline
+Write-Host ' Yes or No' -ForegroundColor Yellow `n`n
+
+$searchcontinue = Read-Host   
+while("yes","no" -notcontains $searchcontinue)
+{
+	$searchcontinue = Read-Host "Yes or No"
+}
+
+}
+Write-host "This is the searchbase:" 
+$searchbase | FT -auto
+write-host `n `n 
 $opsDir = Read-Host "Enter REMOTE Target Operations Directory Path"
 $redLeg = Read-Host "Enter LOCAL redLeg Directory Path"
 
@@ -41,7 +77,7 @@ $storedSettings = @{
     payload = $opsDir
     ap = $advanceParty
     target = $filterTarget
-    search = @($searchBase00,$searchBase01,$searchBase02)
+    search = $searchbase
 
 }
 
