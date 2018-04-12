@@ -1,7 +1,28 @@
 # redLeg
 The redLeg project aims to facilitate control of xmr-stak miners in an Active Directory environment.  redLeg is a reference to the Field Artillery, King of Battle.
 
-## Getting Started
+## Overview
+redLeg has a basic workflow at this time.  The order that the scripts should be run in are as follows:
+
+###### Setup 
+- gridCoordinates.ps1
+- fireBase.ps1
+
+###### Execute
+- fireMission.ps1
+
+###### Halt
+- clearBreaches.ps1
+
+###### Remove
+- moveOut.ps1
+
+###### Report
+- gridCheck.ps1
+
+At this time only one JSON config file is being parsed by the scripts with multiple file support intended in the future.  Removing or renaming the JSON file will invoke the configuration process.
+
+## Installation
 Unzip the folder to a location of your choosing.  Make note of the directory path.  You will be asked for this path when entering values for a JSON config file.
 
 ## Prerequisites
