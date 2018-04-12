@@ -3,6 +3,20 @@
 Write-Host "gridCheck `n"
 
 
+# Test to see if JSON configuration exists
+
+if (!(Test-Path fireDirectionalControl.json))
+
+{
+
+Write-Host "WARNING - !!MISSION COORDINATES NOT FOUND!! - WARNING`n"
+Write-Host "Aborting attempted command...`n"
+Write-Host `n
+Invoke-Expression -Command .\gridCoordinates.ps1
+
+}
+
+
 # Load the fireDirectionalControl JSON config file into an object
 
 $missionParameters = (Get-Content -Raw -Path fireDirectionalControl.json | ConvertFrom-Json) 
@@ -25,3 +39,5 @@ Write-Host "Active Directory Filter String: $filterTarget"
 Write-Host "Active Directory Search Base: $searchBase"
 
 Read-host -Prompt "Press Enter to exit"
+
+exit
