@@ -20,12 +20,11 @@ Invoke-Expression -Command .\gridCoordinates.ps1
 # Load the fireDirectionalControl JSON config file into an object
 
 $missionParameters = (Get-Content -Raw -Path fireDirectionalControl.json | ConvertFrom-Json) 
-# Concatenate the search base 
+# Concatenate the search base
 
-$searchBase00 = $missionParameters.search[0]
-$searchBase01 = $missionParameters.search[1]
-$searchBase02 = $missionParameters.search[2]
-$searchBase = "DC=$searchBase00, OU=$searchBase01, OU=$searchBase02"
+$selectedOU = $missionParameters.search.Name
+$searchBase = $missionParameters.search.DistinguishedName
+
 
 # Set variables from the newly created object
 
@@ -36,6 +35,7 @@ $advanceParty = $missionParameters.ap
 Write-Host "Operations Directory Path: $opsDir"
 Write-Host "Advance Party Path: $advanceParty"
 Write-Host "Active Directory Filter String: $filterTarget"
+Write-Host "Selected Organizationl Unit: $selectedOU"
 Write-Host "Active Directory Search Base: $searchBase"
 
 Read-host -Prompt "Press Enter to exit"
