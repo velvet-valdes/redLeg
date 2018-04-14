@@ -32,18 +32,28 @@ write-host "Powershell Version is GO AT THIS TIME!`n"
 if (Test-Path fireDirectionalControl.json)
 
 {
-    Write-Host "File Exists -  Rename or delete fireDirectionalControl.json from the local redLeg directory.`n"
-    Read-Host -Prompt "Hit enter to exit..."
-    exit
-} 
+    
+Write-Host "Valid mission parameters exist`n Do you wish to execute missions with the current gridCoordinates or flush the current gridCoordinates ?`n"
+$answer = Read-Host "`n[E]xecute`n[F]lush`n"
+while("E","F" -notcontains $answer)
+{
+	$answer = Read-Host "`n[E]xecute`n[F]lush`n"
+}
 
-else { Write-Host "Grid Coordinates have not been entered.  Enter target values now:`n" }
+if ($answer -eq 'F') { write-host "FLUSHING MISSION PARAMETERS`n" ; Remove-Item -path fireDirectionalControl.json }
+if ($answer -eq 'E') { write-host "EXCECUTE`n" ; read-host -prompt "You have chosen to retain the current mission paramters.`nPress enter to exit" ; exit }
+
+}
+
+else 
+
+{ 
+
+Write-Host "Valid mission parameters do not exist.  Enter gridCoordinates now:`n" 
+
+}
 
 
-
-# Get the needed input from the user
-
-$filterTarget = Read-Host "Enter Active Directory Filter String"
 
 #OU searchbase input
 $searchbase = @()
@@ -80,12 +90,14 @@ while("yes","no" -notcontains $searchcontinue)
 }
 
 }
+# Get the needed input from the user
+
+$filterTarget = Read-Host "Enter Cannon Filter String"
+$opsDir = Read-Host "Enter REMOTE Target Operations Directory Path"
+$redLeg = Read-Host "Enter LOCAL redLeg Directory Path"
 Write-host "This is the searchbase:" 
 $searchbase | FT -auto
 write-host `n `n 
-$opsDir = Read-Host "Enter REMOTE Target Operations Directory Path"
-$redLeg = Read-Host "Enter LOCAL redLeg Directory Path"
-
 
 # Concatenate variables
 
