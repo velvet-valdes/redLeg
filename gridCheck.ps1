@@ -19,7 +19,9 @@ Invoke-Expression -Command .\gridCoordinates.ps1
 
 # Load the fireDirectionalControl JSON config file into an object
 
-$missionParameters = (Get-Content -Raw -Path fireDirectionalControl.json | ConvertFrom-Json) 
+$missionParameters = (Get-Content -Raw -Path fireDirectionalControl.json | ConvertFrom-Json)
+
+ 
 # Concatenate the search base
 
 $selectedOU = $missionParameters.search.Name
