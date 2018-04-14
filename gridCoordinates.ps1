@@ -73,8 +73,15 @@ for ($i=1;$i -le $OUhash.count; $i++) {
     $menu.Add($i,($OUhash[$i-1].name))
     }
 
-#Ask user for first choice
+# Ask user for first choice
 [int]$ans = Read-Host `n 'Enter selection'
+# Check for null or 0 value
+while( $null, "0" -contains $ans)
+{
+
+[int]$ans = Read-Host `n 'Enter selection'
+
+}
 $searchbase += $OUhash[$ans-1]
 
 Write-host `n 'You have added '-NoNewline
