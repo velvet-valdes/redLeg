@@ -3,6 +3,30 @@
 Write-Host "gridCoordinates `n"
 
 
+# test powershell version
+
+$currentVersion = $PSVersionTable.PSVersion
+if ($currentVersion -lt 5.1) 
+{ 
+
+write-host "Current Powershell Version is:" $currentVersion
+write-host "Powershell Version is NO-GO AT THIS TIME!`n Please install Powershell 5.1 or greater`n" 
+read-host -Prompt "Press enter to exit..."
+
+exit 
+
+} 
+
+else 
+
+{ 
+
+write-host "Current Powershell Version is:" $currentVersion
+write-host "Powershell Version is GO AT THIS TIME!`n" 
+
+}
+
+
 # Test to see if JSON configuration exists
 
 if (Test-Path fireDirectionalControl.json)
