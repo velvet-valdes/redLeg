@@ -61,6 +61,7 @@ $searchbase = @()
 
 #Dynamically create a menu of options, keep adding searchbases until user is done.
 $searchcontinue = "null"
+$searchbase = @()
 while ("yes","null" -contains $searchcontinue)
 {
   $menu = @{}
@@ -68,7 +69,7 @@ while ("yes","null" -contains $searchcontinue)
   $OUhash = Get-ADObject -Filter 'ObjectClass -eq "organizationalunit"’ | Where-Object { $searchbase.Name -notcontains $_.Name } | Select-Object Name,DistinguishedName
 
   Write-Host "The following are available OU's to search, and that you have not already selected." `n
-  for ($i = 1; $i -le $OUhash.count; $i++) {
+  for ($i = 1; $i -le ($OUhash.count - $searchbase.count); $i++) {
     Write-Host "$i. $($OUhash[$i-1].name)"
     $menu.Add($i,($OUhash[$i - 1].Name))
   }
