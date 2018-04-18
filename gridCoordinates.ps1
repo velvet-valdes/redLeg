@@ -1,5 +1,13 @@
 ﻿# gridCoordinates - JSON config file generator
 
+Clear-Host
+Write-Host "
+▄▄▄  ▄▄▄ .·▄▄▄▄  ▄▄▌  ▄▄▄ . ▄▄ • 
+▀▄ █·▀▄.▀·██▪ ██ ██•  ▀▄.▀·▐█ ▀ ▪
+▐▀▀▄ ▐▀▀▪▄▐█· ▐█▌██▪  ▐▀▀▪▄▄█ ▀█▄
+▐█•█▌▐█▄▄▌██. ██ ▐█▌▐▌▐█▄▄▌▐█▄▪▐█
+.▀  ▀ ▀▀▀ ▀▀▀▀▀• .▀▀▀  ▀▀▀ ·▀▀▀▀ 
+"
 Write-Host "gridCoordinates `n"
 
 
@@ -129,17 +137,10 @@ $filterTarget = Read-Host "Enter Cannon Filter String"
 $opsDir = Read-Host "Enter REMOTE Target Operations Directory Path"
 $redLeg = Read-Host "Enter LOCAL redLeg Directory Path"
 
-# Echo final search base with some ASCII flair
+# Echo final search base 
 
 Write-Host "This is the searchbase:"
 $searchbase | Format-Table -auto
-Write-Host "
-▄▄▄  ▄▄▄ .·▄▄▄▄  ▄▄▌  ▄▄▄ . ▄▄ • 
-▀▄ █·▀▄.▀·██▪ ██ ██•  ▀▄.▀·▐█ ▀ ▪
-▐▀▀▄ ▐▀▀▪▄▐█· ▐█▌██▪  ▐▀▀▪▄▄█ ▀█▄
-▐█•█▌▐█▄▄▌██. ██ ▐█▌▐▌▐█▄▄▌▐█▄▪▐█
-.▀  ▀ ▀▀▀ ▀▀▀▀▀• .▀▀▀  ▀▀▀ ·▀▀▀▀ 
-"
 
 
 # Concatenate variables
