@@ -1,5 +1,13 @@
 ﻿# gridCheck - JSON file object conversion
 
+Clear-Host
+Write-Host "
+▄▄▄  ▄▄▄ .·▄▄▄▄  ▄▄▌  ▄▄▄ . ▄▄ • 
+▀▄ █·▀▄.▀·██▪ ██ ██•  ▀▄.▀·▐█ ▀ ▪
+▐▀▀▄ ▐▀▀▪▄▐█· ▐█▌██▪  ▐▀▀▪▄▄█ ▀█▄
+▐█•█▌▐█▄▄▌██. ██ ▐█▌▐▌▐█▄▄▌▐█▄▪▐█
+.▀  ▀ ▀▀▀ ▀▀▀▀▀• .▀▀▀  ▀▀▀ ·▀▀▀▀ 
+"
 Write-Host "gridCheck `n"
 
 
@@ -22,24 +30,16 @@ if (!(Test-Path fireDirectionalControl.json))
 $missionParameters = (Get-Content -Raw -Path fireDirectionalControl.json | ConvertFrom-Json)
 
 
-# Concatenate the search base
+# Loop through the object and place the values in a hash tables
 
-$selectedOU = $missionParameters.search.Name
-$searchBase = $missionParameters.search.distinguishedname
+$hash = @{}
+foreach ($property in $missionParameters.PSObject.Properties) {
+    $hash[$property.Name] = $property.Value
+}
 
 
-# Set variables from the newly created object
-
-$opsDir = $missionParameters.ops
-$filterTarget = $missionParameters.Target
-$advanceParty = $missionParameters.ap
-
-Write-Host "Operations Directory Path: $opsDir"
-Write-Host "Advance Party Path: $advanceParty"
-Write-Host "Active Directory Filter String: $filterTarget"
-Write-Host "Selected Organizationl Unit: $selectedOU"
-Write-Host "Active Directory Search Base: $searchBase"
-
+# Echo the mission parameters to the screen
+$hash | Format-Table -AutoSize -Wrap
 Read-Host -Prompt "Press Enter to exit"
 
 exit
