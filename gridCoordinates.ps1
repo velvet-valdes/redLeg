@@ -55,57 +55,92 @@ else
 
 
 
-#OU searchbase input
+# Create searchbase array and menu hash table
+
 $searchbase = @()
+$menu = @{}
 
 
-#Dynamically create a menu of options, keep adding searchbases until user is done.
+# Add OUs to the menu hash table
+
+$OUlist = Get-ADObject -Filter 'ObjectClass -eq "organizationalunit"’ | Select-Object Name,DistinguishedName
+for ($i = 1; $i -le $OUlist.count; $i++) { $menu.Add($i,($OUlist[$i - 1].Name)) }
+
+
+# Set the user input state and prompt for input
+
 $searchcontinue = "null"
-$searchbase = @()
 while ("yes","null" -contains $searchcontinue)
-{
-  $menu = @{}
-  $OUhash = @{}
-  $OUhash = Get-ADObject -Filter 'ObjectClass -eq "organizationalunit"’ | Where-Object { $searchbase.Name -notcontains $_.Name } | Select-Object Name,DistinguishedName
 
-  Write-Host "The following are available OU's to search, and that you have not already selected." `n
-  for ($i = 1; $i -le ($OUhash.count - $searchbase.count); $i++) {
-    Write-Host "$i. $($OUhash[$i-1].name)"
-    $menu.Add($i,($OUhash[$i - 1].Name))
-  }
-
-  # Ask user for first choice
-  [int]$ans = Read-Host `n 'Enter selection'
-  # Check for null or 0 value
-  while ($null,"0" -contains $ans)
   {
+ 
+  # Display the contents of the menu hash table
 
-    [int]$ans = Read-Host `n 'Enter selection'
+  #Clear-Host
+  $menu | Format-Table -auto
+  
 
-  }
-  $searchbase += $OUhash[$ans - 1]
+  # Prompt for menu selection
 
+  [int]$ans = Read-Host `n 'Enter selection'
+  while ($null,"0",([int]$ans -gt ($OUlist.count))  -contains $ans) { [int]$ans = Read-Host "`n Selection out of bounds.`n Please select a number greater than 0 and less than" $OUlist.count }
+
+
+  # Check to see if value has been previously selected and if not concatenate it to the searchbase
+  
+  if (!($searchbase.Contains($OUlist[$ans - 1]))) 
+  
+  { 
+  
+  $searchbase += $OUlist[$ans - 1] 
   Write-Host `n 'You have added ' -NoNewline
-  Write-Host ($OUhash[$ans - 1].Name) -fore yellow -NoNewline
+  Write-Host ($OUlist[$ans - 1].Name) -fore yellow -NoNewline
   Write-Host ' OU to the searchbase.'
+
+  } 
+  
+  else 
+  
+  { 
+  
+  Write-Host `n 'Selection exists in searchbase currently' 
+  
+  }
+
   Write-Host `n 'Add another OU to searchbase?' -NoNewline
   Write-Host ' Yes or No' -ForegroundColor Yellow `n`n
-
   $searchcontinue = Read-Host
   while ("yes","no" -notcontains $searchcontinue)
+  
   {
+   
     $searchcontinue = Read-Host "Yes or No"
+
   }
 
-}
-# Get the needed input from the user
+  Clear-Host
+  
+  }
 
+
+Write-Host "Filter and Path Parameters"
+Write-Host `n`n
 $filterTarget = Read-Host "Enter Cannon Filter String"
 $opsDir = Read-Host "Enter REMOTE Target Operations Directory Path"
 $redLeg = Read-Host "Enter LOCAL redLeg Directory Path"
+
+# Echo final search base with some ASCII flair
+
 Write-Host "This is the searchbase:"
 $searchbase | Format-Table -auto
-Write-Host `n `n
+Write-Host "
+▄▄▄  ▄▄▄ .·▄▄▄▄  ▄▄▌  ▄▄▄ . ▄▄ • 
+▀▄ █·▀▄.▀·██▪ ██ ██•  ▀▄.▀·▐█ ▀ ▪
+▐▀▀▄ ▐▀▀▪▄▐█· ▐█▌██▪  ▐▀▀▪▄▄█ ▀█▄
+▐█•█▌▐█▄▄▌██. ██ ▐█▌▐▌▐█▄▄▌▐█▄▪▐█
+.▀  ▀ ▀▀▀ ▀▀▀▀▀• .▀▀▀  ▀▀▀ ·▀▀▀▀ 
+"
+
 
 # Concatenate variables
 
@@ -133,16 +168,6 @@ $storedSettings | ConvertTo-Json | Out-File $configPath
 
 # Test and give verbose feedback
 
-if (Test-Path $configPath)
-
-{ Write-Host "JSON configuration successfully created" }
-
-else
-
-{ Write-Host "JSON configuration FAILED" }
-
-
+if (Test-Path $configPath) { Write-Host "JSON configuration successfully created" } else { Write-Host "JSON configuration FAILED" }
 Read-Host -Prompt "Press Enter to exit"
-
-
 exit
