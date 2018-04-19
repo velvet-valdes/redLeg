@@ -214,7 +214,7 @@ $redLeg                          = New-Object system.Windows.Forms.Form
 $redLeg.ClientSize               = '600,400'
 $redLeg.text                     = "redLeg - fireDirectionalControl"
 $redLeg.TopMost                  = $false
-$redLegImage                     = [system.drawing.image]::FromFile("crossCannons.png")
+$redLegImage                     = [system.drawing.image]::FromFile("${psscriptroot}\crossCannons.png")
 $redLeg.BackgroundImage          = $redLegImage
 $redLeg.BackgroundImageLayout    = "Zoom"
 
