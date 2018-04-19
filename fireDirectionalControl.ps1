@@ -2,6 +2,80 @@
 
 $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
 $missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
+$logoASCIIredLeg = "
+▄▄▄  ▄▄▄ .·▄▄▄▄  ▄▄▌  ▄▄▄ . ▄▄ • 
+▀▄ █·▀▄.▀·██▪ ██ ██•  ▀▄.▀·▐█ ▀ ▪
+▐▀▀▄ ▐▀▀▪▄▐█· ▐█▌██▪  ▐▀▀▪▄▄█ ▀█▄
+▐█•█▌▐█▄▄▌██. ██ ▐█▌▐▌▐█▄▄▌▐█▄▪▐█
+.▀  ▀ ▀▀▀ ▀▀▀▀▀• .▀▀▀  ▀▀▀ ·▀▀▀▀ 
+"
+$logoASCIIfireMission = "
+·▄▄▄▪  ▄▄▄  ▄▄▄ .                     
+▐▄▄·██ ▀▄ █·▀▄.▀·                     
+██▪ ▐█·▐▀▀▄ ▐▀▀▪▄                     
+██▌.▐█▌▐█•█▌▐█▄▄▌                     
+▀▀▀ ▀▀▀.▀  ▀ ▀▀▀                      
+• ▌ ▄ ·. ▪  .▄▄ · .▄▄ · ▪         ▐ ▄ 
+·██ ▐███▪██ ▐█ ▀. ▐█ ▀. ██ ▪     •█▌▐█
+▐█ ▌▐▌▐█·▐█·▄▀▀▀█▄▄▀▀▀█▄▐█· ▄█▀▄ ▐█▐▐▌
+██ ██▌▐█▌▐█▌▐█▄▪▐█▐█▄▪▐█▐█▌▐█▌.▐▌██▐█▌
+▀▀  █▪▀▀▀▀▀▀ ▀▀▀▀  ▀▀▀▀ ▀▀▀ ▀█▄▀▪▀▀ █▪
+"
+$logoASCIIfireBase = "
+·▄▄▄▪  ▄▄▄  ▄▄▄ .      
+▐▄▄·██ ▀▄ █·▀▄.▀·      
+██▪ ▐█·▐▀▀▄ ▐▀▀▪▄      
+██▌.▐█▌▐█•█▌▐█▄▄▌      
+▀▀▀ ▀▀▀.▀  ▀ ▀▀▀       
+▄▄▄▄·  ▄▄▄· .▄▄ · ▄▄▄ .
+▐█ ▀█▪▐█ ▀█ ▐█ ▀. ▀▄.▀·
+▐█▀▀█▄▄█▀▀█ ▄▀▀▀█▄▐▀▀▪▄
+██▄▪▐█▐█ ▪▐▌▐█▄▪▐█▐█▄▄▌
+·▀▀▀▀  ▀  ▀  ▀▀▀▀  ▀▀▀ 
+"
+$logoASCIIgridCheck = "
+ ▄▄ • ▄▄▄  ▪  ·▄▄▄▄      
+▐█ ▀ ▪▀▄ █·██ ██▪ ██     
+▄█ ▀█▄▐▀▀▄ ▐█·▐█· ▐█▌    
+▐█▄▪▐█▐█•█▌▐█▌██. ██     
+·▀▀▀▀ .▀  ▀▀▀▀▀▀▀▀▀•     
+ ▄▄·  ▄ .▄▄▄▄ . ▄▄· ▄ •▄ 
+▐█ ▌▪██▪▐█▀▄.▀·▐█ ▌▪█▌▄▌▪
+██ ▄▄██▀▐█▐▀▀▪▄██ ▄▄▐▀▀▄·
+▐███▌██▌▐▀▐█▄▄▌▐███▌▐█.█▌
+·▀▀▀ ▀▀▀ · ▀▀▀ ·▀▀▀ ·▀  ▀
+"
+$logoASCIImoveOut = "
+• ▌ ▄ ·.        ▌ ▐·▄▄▄ .      ▄• ▄▌▄▄▄▄▄
+·██ ▐███▪▪     ▪█·█▌▀▄.▀·▪     █▪██▌•██  
+▐█ ▌▐▌▐█· ▄█▀▄ ▐█▐█•▐▀▀▪▄ ▄█▀▄ █▌▐█▌ ▐█.▪
+██ ██▌▐█▌▐█▌.▐▌ ███ ▐█▄▄▌▐█▌.▐▌▐█▄█▌ ▐█▌·
+▀▀  █▪▀▀▀ ▀█▄▀▪. ▀   ▀▀▀  ▀█▄▀▪ ▀▀▀  ▀▀▀ 
+"
+$logoASCIIreinitGunline = "
+▄▄▄  ▄▄▄ .▪   ▐ ▄ ▪  ▄▄▄▄▄        
+▀▄ █·▀▄.▀·██ •█▌▐███ •██          
+▐▀▀▄ ▐▀▀▪▄▐█·▐█▐▐▌▐█· ▐█.▪        
+▐█•█▌▐█▄▄▌▐█▌██▐█▌▐█▌ ▐█▌·        
+.▀  ▀ ▀▀▀ ▀▀▀▀▀ █▪▀▀▀ ▀▀▀         
+ ▄▄ • ▄• ▄▌ ▐ ▄ ▄▄▌  ▪   ▐ ▄ ▄▄▄ .
+▐█ ▀ ▪█▪██▌•█▌▐███•  ██ •█▌▐█▀▄.▀·
+▄█ ▀█▄█▌▐█▌▐█▐▐▌██▪  ▐█·▐█▐▐▌▐▀▀▪▄
+▐█▄▪▐█▐█▄█▌██▐█▌▐█▌▐▌▐█▌██▐█▌▐█▄▄▌
+·▀▀▀▀  ▀▀▀ ▀▀ █▪.▀▀▀ ▀▀▀▀▀ █▪ ▀▀▀ 
+"
+$logoASCIIclearBreach = "
+ ▄▄· ▄▄▌  ▄▄▄ . ▄▄▄· ▄▄▄        
+▐█ ▌▪██•  ▀▄.▀·▐█ ▀█ ▀▄ █·      
+██ ▄▄██▪  ▐▀▀▪▄▄█▀▀█ ▐▀▀▄       
+▐███▌▐█▌▐▌▐█▄▄▌▐█ ▪▐▌▐█•█▌      
+·▀▀▀ .▀▀▀  ▀▀▀  ▀  ▀ .▀  ▀      
+▄▄▄▄· ▄▄▄  ▄▄▄ . ▄▄▄·  ▄▄·  ▄ .▄
+▐█ ▀█▪▀▄ █·▀▄.▀·▐█ ▀█ ▐█ ▌▪██▪▐█
+▐█▀▀█▄▐▀▀▄ ▐▀▀▪▄▄█▀▀█ ██ ▄▄██▀▐█
+██▄▪▐█▐█•█▌▐█▄▄▌▐█ ▪▐▌▐███▌██▌▐▀
+·▀▀▀▀ .▀  ▀ ▀▀▀  ▀  ▀ ·▀▀▀ ▀▀▀ ·
+"
 
 # Function Definitions
 
@@ -119,9 +193,17 @@ Start-Process powershell -ArgumentList "-noexit -command $Scriptblock"
 }
 }
 
-# Pre-Flight Checks
+function showFireBase { $outputPane.text = $logoASCIIfireBase }
 
-if (!(Test-Path $fireDirectionalControl)) { $outputPane.text =  "WARNING - !!MISSION COORDINATES NOT FOUND!! - WARNING`n" }
+function showFireMission { $outputPane.text = $logoASCIIfireMission }
+
+function showClearBreach { $outputPane.text = $logoASCIIclearBreach }
+
+function showReinitGunline { $outputPane.text = $logoASCIIreinitGunline }
+
+function showGridCheck { $outputPane.text = $logoASCIIgridCheck }
+
+function showMoveOut { $outputPane.text = $logoASCIImoveOut }
 
 Add-Type -AssemblyName System.Windows.Forms
 [System.Windows.Forms.Application]::EnableVisualStyles()
@@ -181,12 +263,12 @@ $gridCheck.location              = New-Object System.Drawing.Point(40,240)
 $gridCheck.Font                  = 'Microsoft Sans Serif,10'
 
 $outputPane                      = New-Object system.Windows.Forms.Label
-$outputPane.text                 = "Awaiting Orders..."
+$outputPane.text                 = $logoASCIIredLeg
 $outputPane.AutoSize             = $false
 $outputPane.width                = 380
 $outputPane.height               = 270
 $outputPane.location             = New-Object System.Drawing.Point(170,45)
-$outputPane.Font                 = 'Microsoft Sans Serif,10'
+$outputPane.Font                 = 'Courier,8'
 
 $redLeg.controls.AddRange(@($fireMission,$fireBase,$clearBreach,$moveOut,$progressBar,$reinitGunline,$gridCheck,$outputPane))
 
@@ -195,13 +277,16 @@ $fireBase.Add_Click({ fireBase })
 $fireMission.Add_Click({ fireMission })
 $clearBreach.Add_Click({ clearBreach })
 $reinitGunline.Add_Click({ reinitGunline })
-$moveOut.Add_Click({ moveOut })
+$moveOut.Add_Click({ [System.Windows.Forms.MessageBox]::Show("Breaking Down The Firebase`nMoving Out..." , "Confirm Entry") ; moveOut })
 $gridCheck.Add_Click({ gridCheck })
+$fireBase.Add_MouseEnter({ showFireBase })
+$fireMission.Add_MouseEnter({ showFireMission })
+$clearBreach.Add_MouseEnter({ showClearBreach })
+$reinitGunline.Add_MouseEnter({ showReinitGunline })
+$gridCheck.Add_MouseEnter({ showGridCheck })
+$moveOut.Add_MouseEnter({ showMoveOut })
 #endregion events }
 
 #endregion GUI }
-
-
-#Write your logic code here
 
 [void]$redLeg.ShowDialog()
