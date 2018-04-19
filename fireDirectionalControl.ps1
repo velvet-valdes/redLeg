@@ -214,6 +214,9 @@ $redLeg                          = New-Object system.Windows.Forms.Form
 $redLeg.ClientSize               = '600,400'
 $redLeg.text                     = "redLeg - fireDirectionalControl"
 $redLeg.TopMost                  = $false
+$redLegImage                     = [system.drawing.image]::FromFile("crossCannons.png")
+$redLeg.BackgroundImage          = $redLegImage
+$redLeg.BackgroundImageLayout    = "Zoom"
 
 $fireMission                     = New-Object system.Windows.Forms.Button
 $fireMission.text                = "FIRE"
@@ -268,7 +271,8 @@ $outputPane.AutoSize             = $false
 $outputPane.width                = 380
 $outputPane.height               = 270
 $outputPane.location             = New-Object System.Drawing.Point(170,45)
-$outputPane.Font                 = 'Courier,8'
+$outputPane.Font                 = 'Courier,10'
+$outputPane.BackColor            = "Transparent"
 
 $redLeg.controls.AddRange(@($fireMission,$fireBase,$clearBreach,$moveOut,$progressBar,$reinitGunline,$gridCheck,$outputPane))
 
