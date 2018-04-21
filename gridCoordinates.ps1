@@ -6,16 +6,17 @@ Add-Type -AssemblyName System.Windows.Forms
 #region begin GUI{ 
 
 $gridCoordinates                 = New-Object system.Windows.Forms.Form
-$gridCoordinates.ClientSize      = '900,550'
+$gridCoordinates.ClientSize      = '900,450'
 $gridCoordinates.text            = "gridCoordinates"
 $gridCoordinates.TopMost         = $false
 
 $outputPane                      = New-Object system.Windows.Forms.Label
 $outputPane.BackColor            = "#000000"
+$outputPane.BorderStyle          = 'Fixed3D'
 $outputPane.AutoSize             = $false
 $outputPane.width                = 450
-$outputPane.height               = 360
-$outputPane.location             = New-Object System.Drawing.Point(400,60)
+$outputPane.height               = 350
+$outputPane.location             = New-Object System.Drawing.Point(400,50)
 $outputPane.Font                 = 'Courier,10'
 $outputPane.ForeColor            = "#7ed321"
 
@@ -68,47 +69,24 @@ $readConfig                      = New-Object system.Windows.Forms.Button
 $readConfig.text                 = "READ CONFIG"
 $readConfig.width                = 130
 $readConfig.height               = 65
-$readConfig.location             = New-Object System.Drawing.Point(30,450)
+$readConfig.location             = New-Object System.Drawing.Point(30,335)
 $readConfig.Font                 = 'Microsoft Sans Serif,10'
 
 $writeConfig                     = New-Object system.Windows.Forms.Button
 $writeConfig.text                = "WRITE CONFIG"
 $writeConfig.width               = 130
 $writeConfig.height              = 65
-$writeConfig.location            = New-Object System.Drawing.Point(197,450)
+$writeConfig.location            = New-Object System.Drawing.Point(240,335)
 $writeConfig.Font                = 'Microsoft Sans Serif,10'
 
-$push                            = New-Object system.Windows.Forms.Button
-$push.text                       = "PUSH"
-$push.width                      = 130
-$push.height                     = 65
-$push.location                   = New-Object System.Drawing.Point(381,450)
-$push.Font                       = 'Microsoft Sans Serif,10'
-
-$pop                             = New-Object system.Windows.Forms.Button
-$pop.text                        = "POP"
-$pop.width                       = 130
-$pop.height                      = 65
-$pop.location                    = New-Object System.Drawing.Point(557,450)
-$pop.Font                        = 'Microsoft Sans Serif,10'
-
-$clear                           = New-Object system.Windows.Forms.Button
-$clear.text                      = "CLEAR"
-$clear.width                     = 130
-$clear.height                    = 65
-$clear.location                  = New-Object System.Drawing.Point(720,450)
-$clear.Font                      = 'Microsoft Sans Serif,10'
-
-$gridCoordinates.controls.AddRange(@($outputPane,$label_filter,$textBox_filter,$label_OU,$textBox_OU,$label_OpsDir,$textBox_OpsDir,$readConfig,$writeConfig,$push,$pop,$clear))
+$gridCoordinates.controls.AddRange(@($outputPane,$label_filter,$textBox_filter,$label_OU,$textBox_OU,$label_OpsDir,$textBox_OpsDir,$readConfig,$writeConfig))
 
 #region gui events {
-$gridCoordinates.Add_Load({ preflightCheck $outputPane; reconGrid $outputPane  })
-$writeConfig.Add_Click({ setConfig $outputPane $textBox_filter $textBox_OU $textBox_OpsDir })
+$gridCoordinates.Add_Load({ showRedleg $outputPane ; preflightCheck $outputPane; reconGrid $outputPane  })
+$writeConfig.Add_Click({ setGrid $outputPane $textBox_filter $textBox_OU $textBox_OpsDir })
+$readConfig.Add_Click({ getGrid $outputPane })
 #endregion events }
 
 #endregion GUI }
-
-
-#Write your logic code here
 
 [void]$gridCoordinates.ShowDialog()

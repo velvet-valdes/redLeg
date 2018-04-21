@@ -1,13 +1,9 @@
-﻿# Retreive JSON Config and set Global Variables
-
-$fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
-$missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
-#$searchBase = @()
-
-# Main Functions
+﻿# Main Functions
 
 function fireBase($outputPane, $progressBar) {
 
+$fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
+$missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
 $opsDir = $missionParameters.ops
 $filterTarget = $missionParameters.Target
 $advanceParty = $missionParameters.ap
@@ -29,6 +25,8 @@ Start-Process powershell -ArgumentList "-noexit -command $Scriptblock"
 
 function fireMission($outputPane, $progressBar) {
 
+$fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
+$missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
 $searchbase = $missionParameters.search
 $filterTarget = $missionParameters.Target
 $opsDir = $missionParameters.ops
@@ -49,6 +47,8 @@ Start-Process powershell -ArgumentList "-noexit -command  $Scriptblock"
 
 function clearBreach($outputPane, $progressBar) {
 
+$fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
+$missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
 $searchbase = $missionParameters.search
 $filterTarget = $missionParameters.Target
 $opsDir = $missionParameters.ops
@@ -65,13 +65,12 @@ $outputPane.text = "$client - Clearing Breach..."
 
 }
 
-Get-Process -Name powershell | Where-Object -FilterScript { $_.Id -ne $PID } | Stop-Process -Passthru
-$outputPane.text = "Breaches CLEAR!"
-
-}
+} # rename - ceaseFire
 
 function reinitGunline($outputPane, $progressBar) {
 
+$fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
+$missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
 $filterTarget = $missionParameters.Target
 $searchbase = $missionParameters.search
 $hostList = $searchbase | ForEach-Object { Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $_.distinguishedname } | Select-Object Name
@@ -89,10 +88,12 @@ Restart-Computer -ComputerName $client -Force
 
 Get-Process -Name powershell | Where-Object -FilterScript { $_.Id -ne $PID } | Stop-Process -Passthru
 
-}
+} # rename - cycleGunline
 
-function gridCheck($outputPane) {
+function getGrid($outputPane) {
 
+$fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
+$missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
 $searchbase = $missionParameters.search.DistinguishedName
 $searchOU = $missionParameters.search.Name
 $filterTarget = $missionParameters.Target
@@ -101,10 +102,39 @@ $advanceParty = $missionParameters.ap
 $payload = $missionParameters.payload
 $outputPane.text = "Mission Parameters:`n`nSearch Base: $searchBase`n`nSelected OU(s): $searchOU`n`nFilter Target: $filterTarget`n`nOperations Directory: $opsDir`n`nPayload Path: $payload`n`nAdvance Party: $advanceParty"
 
+} #renamed from gridCheck
+
+function setGrid ($outputPane, $textBox_filter, $textBox_OU, $textBox_OpsDir) {
+
+[string]$searchString = $textBox_OU.text
+$searchBase += Get-ADObject -Filter "Name -eq '$searchString'" | select Name, DistinguishedName
+$filterTarget = $textBox_filter.text
+$opsDir = $textBox_OpsDir.text
+$configPath = "${psscriptroot}\fireDirectionalControl.json"
+$advanceParty = "${psscriptroot}\advanceParty.ps1"
+
+# Create hashtable out of user input
+
+$storedSettings = @{
+
+  ops = $opsDir
+  payload = $opsDir
+  ap = $advanceParty
+  Target = $filterTarget
+  search = $searchBase
+
 }
+
+# Convert hashtable to JSON and save to a file
+
+$storedSettings | ConvertTo-Json | Out-File $configPath
+
+} 
 
 function moveOut($outputPane, $progressBar) {
 
+$fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
+$missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
 $searchbase = $missionParameters.search
 $filterTarget = $missionParameters.Target
 $opsDir = $missionParameters.ops
@@ -175,6 +205,12 @@ jsonCheck $outputPane
 
 }
 
+function clearShells ($outputPane) { 
+
+Get-Process -Name powershell | Where-Object -FilterScript { $_.Id -ne $PID } | Stop-Process -Passthru
+
+}
+
 # Active Directory functions
 
 function reconDirectory ($outputPane) {
@@ -214,35 +250,6 @@ function reconGrid ($outputPane) {
 $outputPane.text += "CURRENT RECON:`n"
 reconDirectory $outputPane
 reconBase $outputPane
-
-}
-
-# User input functions
-
-function setConfig ($outputPane, $textBox_filter, $textBox_OU, $textBox_OpsDir) {
-
-[string]$searchString = $textBox_OU.text
-$searchBase += Get-ADObject -Filter "Name -eq '$searchString'" | select Name, DistinguishedName
-$filterTarget = $textBox_filter.text
-$opsDir = $textBox_OpsDir.text
-$configPath = "${psscriptroot}\fireDirectionalControl.json"
-$advanceParty = "${psscriptroot}\advanceParty.ps1"
-
-# Create hashtable out of user input
-
-$storedSettings = @{
-
-  ops = $opsDir
-  payload = $opsDir
-  ap = $advanceParty
-  Target = $filterTarget
-  search = $searchBase
-
-}
-
-# Convert hashtable to JSON and save to a file
-
-$storedSettings | ConvertTo-Json | Out-File $configPath
 
 }
 
