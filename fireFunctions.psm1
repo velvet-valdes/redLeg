@@ -219,13 +219,17 @@ reconBase $outPane
 
 # User input functions
 
-function setConfig ($outPane, $textBox_filter, $textBox_SearchBase, $textBox_OpsDir) {
+function setConfig ($outPane, $textBox_filter, $textBox_OU, $textBox_DC1, $textBox_DC2, $textBox_OpsDir) {
+
 
 $filterTarget = $textBox_filter.text
 $opsDir = $textBox_OpsDir.text
-$searchbase = $textBox_SearchBase.text
+$searchBase00 = $textBox_OU.text
+$searchBase01 = $textBox_DC1.text
+$searchBase02 = $textBox_DC2.text
 $configPath = "${psscriptroot}\fireDirectionalControl.json"
 $advanceParty = "${psscriptroot}\advanceParty.ps1"
+$searchBase = @("OU=$searchBase00,DC=$searchBase01,DC=$searchBase02")
 
 # Create hashtable out of user input
 
@@ -235,13 +239,20 @@ $storedSettings = @{
   payload = $opsDir
   ap = $advanceParty
   Target = $filterTarget
-  search = $searchbase
+  search = $searchBase
 
 }
 
 # Convert hashtable to JSON and save to a file
 
 $storedSettings | ConvertTo-Json | Out-File $configPath
+
+}
+
+function testSet ( $outPane ) {
+
+
+
 
 }
 
