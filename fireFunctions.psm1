@@ -123,6 +123,127 @@ Start-Process powershell -ArgumentList "-noexit -command $Scriptblock"
 }
 }
 
+# Info functions
+
+function versionCheck($outputPane) {
+
+$currentVersion = $PSVersionTable.PSVersion
+if ($currentVersion -lt 5.1)
+
+{
+
+  $outputPane.text += "Current Powershell Version is: $currentVersion`n"
+  $outputPane.text += "Powershell Version is NO-GO AT THIS TIME!`n Please install Powershell 5.1 or greater`n"
+
+}
+
+else
+
+{
+
+  $outputPane.text += "Current Powershell Version is: $currentVersion`n"
+  $outputPane.text += "Powershell Version is GO AT THIS TIME!`n`n"
+
+}
+
+}
+
+function jsonCheck($outputPane) {
+
+if (Test-Path "${psscriptroot}\fireDirectionalControl.json")
+
+{
+
+  $outputPane.text += "Config File Present`n`n"
+  
+}
+
+else
+
+{
+
+  $outputPane.text += "Config File Needed`n`n"
+
+}
+
+}
+
+function preflightCheck($outputPane) {
+
+versionCheck $outputPane
+jsonCheck $outputPane
+
+}
+
+# Active Directory functions
+
+function reconDirectory ($outputPane) {
+
+$searchbase = @()
+$menu = @{}
+$OUlist = Get-ADObject -Filter 'ObjectClass -eq "organizationalunit"’ | Select-Object Name,DistinguishedName
+for ($i = 1; $i -le $OUlist.count; $i++) { $menu.Add($i,($OUlist[$i - 1].Name)) }
+$outputPane.text += "`nOrganizational Units:`n"
+
+for ($x = 1; $x -le $menu.count; $x++) { 
+
+$outputPane.text += ($menu.Item($x), "`n")
+
+}
+
+}
+
+function reconBase ($outputPane) {
+
+$searchbase = @()
+$menu = @{}
+$OUlist = Get-ADObject -Filter 'ObjectClass -eq "organizationalunit"’ | Select-Object Name,DistinguishedName
+for ($i = 1; $i -le $OUlist.count; $i++) { $menu.Add($i,($OUlist[$i - 1].DistinguishedName)) }
+$outputPane.text += "`nSearchbase Candidates:`n"
+
+for ($x = 1; $x -le $menu.count; $x++) { 
+
+$outputPane.text += ($menu.Item($x), "`n")
+
+}
+
+}
+
+function reconGrid ($outPane) {
+
+$outPane.text += "CURRENT RECON:`n"
+reconDirectory $outPane
+reconBase $outPane
+
+}
+
+# User input functions
+
+function setConfig ($outPane, $textBox_filter, $textBox_SearchBase, $textBox_OpsDir) {
+
+$filterTarget = $textBox_filter.text
+$opsDir = $textBox_OpsDir.text
+$searchbase = $textBox_SearchBase.text
+$configPath = "${psscriptroot}\fireDirectionalControl.json"
+$advanceParty = "${psscriptroot}\advanceParty.ps1"
+
+# Create hashtable out of user input
+
+$storedSettings = @{
+
+  ops = $opsDir
+  payload = $opsDir
+  ap = $advanceParty
+  Target = $filterTarget
+  search = $searchbase
+
+}
+
+# Convert hashtable to JSON and save to a file
+
+$storedSettings | ConvertTo-Json | Out-File $configPath
+
+}
 
 # Sick ASCII art functions
 

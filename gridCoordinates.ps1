@@ -1,174 +1,93 @@
-﻿# gridCoordinates - JSON config file generator
+﻿Import-Module "${psscriptroot}\fireFunctions.psm1"
 
-Clear-Host
-Write-Host "
-▄▄▄  ▄▄▄ .·▄▄▄▄  ▄▄▌  ▄▄▄ . ▄▄ • 
-▀▄ █·▀▄.▀·██▪ ██ ██•  ▀▄.▀·▐█ ▀ ▪
-▐▀▀▄ ▐▀▀▪▄▐█· ▐█▌██▪  ▐▀▀▪▄▄█ ▀█▄
-▐█•█▌▐█▄▄▌██. ██ ▐█▌▐▌▐█▄▄▌▐█▄▪▐█
-.▀  ▀ ▀▀▀ ▀▀▀▀▀• .▀▀▀  ▀▀▀ ·▀▀▀▀ 
-"
-Write-Host "gridCoordinates `n"
+Add-Type -AssemblyName System.Windows.Forms
+[System.Windows.Forms.Application]::EnableVisualStyles()
 
+#region begin GUI{ 
 
-# test powershell version
+$gridCoordinates                 = New-Object system.Windows.Forms.Form
+$gridCoordinates.ClientSize      = '900,550'
+$gridCoordinates.text            = "gridCoordinates"
+$gridCoordinates.TopMost         = $false
 
-$currentVersion = $PSVersionTable.PSVersion
-if ($currentVersion -lt 5.1)
-{
+$textBox_filter                  = New-Object system.Windows.Forms.TextBox
+$textBox_filter.multiline        = $false
+$textBox_filter.width            = 340
+$textBox_filter.height           = 20
+$textBox_filter.location         = New-Object System.Drawing.Point(30,60)
+$textBox_filter.Font             = 'Microsoft Sans Serif,10'
 
-  Write-Host "Current Powershell Version is:" $currentVersion
-  Write-Host "Powershell Version is NO-GO AT THIS TIME!`n Please install Powershell 5.1 or greater`n"
-  Read-Host -Prompt "Press enter to exit..."
+$label_filter                    = New-Object system.Windows.Forms.Label
+$label_filter.text               = "Active Directory Filter String"
+$label_filter.AutoSize           = $true
+$label_filter.width              = 25
+$label_filter.height             = 10
+$label_filter.location           = New-Object System.Drawing.Point(30,30)
+$label_filter.Font               = 'Microsoft Sans Serif,10'
 
-  exit
+$textBox_SearchBase              = New-Object system.Windows.Forms.TextBox
+$textBox_SearchBase.multiline    = $false
+$textBox_SearchBase.width        = 340
+$textBox_SearchBase.height       = 20
+$textBox_SearchBase.location     = New-Object System.Drawing.Point(30,130)
+$textBox_SearchBase.Font         = 'Microsoft Sans Serif,10'
 
-}
+$label_SearchBase                = New-Object system.Windows.Forms.Label
+$label_SearchBase.text           = "Active Directory Search Base OU"
+$label_SearchBase.AutoSize       = $true
+$label_SearchBase.width          = 25
+$label_SearchBase.height         = 10
+$label_SearchBase.location       = New-Object System.Drawing.Point(30,100)
+$label_SearchBase.Font           = 'Microsoft Sans Serif,10'
 
-else
+$label_OpsDir                    = New-Object system.Windows.Forms.Label
+$label_OpsDir.text               = "Remote Operations Path"
+$label_OpsDir.AutoSize           = $true
+$label_OpsDir.width              = 25
+$label_OpsDir.height             = 10
+$label_OpsDir.location           = New-Object System.Drawing.Point(30,170)
+$label_OpsDir.Font               = 'Microsoft Sans Serif,10'
 
-{
+$textBox_OpsDir                  = New-Object system.Windows.Forms.TextBox
+$textBox_OpsDir.multiline        = $false
+$textBox_OpsDir.width            = 340
+$textBox_OpsDir.height           = 20
+$textBox_OpsDir.location         = New-Object System.Drawing.Point(30,200)
+$textBox_OpsDir.Font             = 'Microsoft Sans Serif,10'
 
-  Write-Host "Current Powershell Version is:" $currentVersion
-  Write-Host "Powershell Version is GO AT THIS TIME!`n"
+$flush                           = New-Object system.Windows.Forms.Button
+$flush.text                      = "FLUSH"
+$flush.width                     = 130
+$flush.height                    = 65
+$flush.location                  = New-Object System.Drawing.Point(30,450)
+$flush.Font                      = 'Microsoft Sans Serif,10'
 
-}
+$write                           = New-Object system.Windows.Forms.Button
+$write.text                      = "WRITE"
+$write.width                     = 130
+$write.height                    = 65
+$write.location                  = New-Object System.Drawing.Point(240,450)
+$write.Font                      = 'Microsoft Sans Serif,10'
 
+$outputPane                      = New-Object system.Windows.Forms.Label
+$outputPane.BackColor            = "#000000"
+$outputPane.AutoSize             = $false
+$outputPane.width                = 450
+$outputPane.height               = 360
+$outputPane.location             = New-Object System.Drawing.Point(400,60)
+$outputPane.Font                 = 'Courier,10'
+$outputPane.ForeColor            = "#7ed321"
 
-# Test to see if JSON configuration exists
+$gridCoordinates.controls.AddRange(@($textBox_filter,$label_filter,$textBox_SearchBase,$label_SearchBase,$label_OpsDir,$textBox_OpsDir,$flush,$write,$outputPane))
 
-if (Test-Path fireDirectionalControl.json)
+#region gui events {
+$gridCoordinates.Add_Load({ preflightCheck $outputPane })
+$write.Add_Click({ setConfig $outPane $textBox_filter $textBox_SearchBase $textBox_OpsDir})
+#endregion events }
 
-{
-
-  Write-Host "Valid mission parameters exist`n Do you wish to execute missions with the current gridCoordinates or flush the current gridCoordinates ?`n"
-  $answer = Read-Host "`n[E]xecute`n[F]lush`n"
-  while ("E","F" -notcontains $answer)
-  {
-    $answer = Read-Host "`n[E]xecute`n[F]lush`n"
-  }
-
-  if ($answer -eq 'F') { Write-Host "FLUSHING MISSION PARAMETERS`n"; Remove-Item -Path fireDirectionalControl.json }
-  if ($answer -eq 'E') { Write-Host "EXCECUTE`n"; Read-Host -Prompt "You have chosen to retain the current mission paramters.`nPress enter to exit"; exit }
-
-}
-
-else
-
-{
-
-  Write-Host "Valid mission parameters do not exist.  Enter gridCoordinates now:`n"
-
-}
-
-
-
-# Create searchbase array and menu hash table
-
-$searchbase = @()
-$menu = @{}
-
-
-# Add OUs to the menu hash table
-
-$OUlist = Get-ADObject -Filter 'ObjectClass -eq "organizationalunit"’ | Select-Object Name,DistinguishedName
-for ($i = 1; $i -le $OUlist.count; $i++) { $menu.Add($i,($OUlist[$i - 1].Name)) }
-
-
-# Set the user input state and prompt for input
-
-$searchcontinue = "null"
-while ("yes","null" -contains $searchcontinue)
-
-  {
- 
-  # Display the contents of the menu hash table
-
-  #Clear-Host
-  $menu | Format-Table -auto
-  
-
-  # Prompt for menu selection
-
-  [int]$ans = Read-Host `n 'Enter selection'
-  while ($null,"0",([int]$ans -gt ($OUlist.count))  -contains $ans) { [int]$ans = Read-Host "`n Selection out of bounds.`n Please select a number greater than 0 and less than" $OUlist.count }
+#endregion GUI }
 
 
-  # Check to see if value has been previously selected and if not concatenate it to the searchbase
-  
-  if (!($searchbase.Contains($OUlist[$ans - 1]))) 
-  
-  { 
-  
-  $searchbase += $OUlist[$ans - 1] 
-  Write-Host `n 'You have added ' -NoNewline
-  Write-Host ($OUlist[$ans - 1].Name) -fore yellow -NoNewline
-  Write-Host ' OU to the searchbase.'
+#Write your logic code here
 
-  } 
-  
-  else 
-  
-  { 
-  
-  Write-Host `n 'Selection exists in searchbase currently' 
-  
-  }
-
-  Write-Host `n 'Add another OU to searchbase?' -NoNewline
-  Write-Host ' Yes or No' -ForegroundColor Yellow `n`n
-  $searchcontinue = Read-Host
-  while ("yes","no" -notcontains $searchcontinue)
-  
-  {
-   
-    $searchcontinue = Read-Host "Yes or No"
-
-  }
-
-  Clear-Host
-  
-  }
-
-
-Write-Host "Filter and Path Parameters"
-Write-Host `n`n
-$filterTarget = Read-Host "Enter Cannon Filter String"
-$opsDir = Read-Host "Enter REMOTE Target Operations Directory Path"
-$redLeg = Read-Host "Enter LOCAL redLeg Directory Path"
-
-# Echo final search base 
-
-Write-Host "This is the searchbase:"
-$searchbase | Format-Table -auto
-
-
-# Concatenate variables
-
-$configPath = "$redLeg\fireDirectionalControl.json"
-$advanceParty = "$redLeg\advanceParty.ps1"
-
-
-# Create hashtable out of user input
-
-$storedSettings = @{
-
-  ops = $opsDir
-  payload = $opsDir
-  ap = $advanceParty
-  Target = $filterTarget
-  search = $searchbase
-
-}
-
-
-# Convert hashtable to JSON and save to a file
-
-$storedSettings | ConvertTo-Json | Out-File $configPath
-
-
-# Test and give verbose feedback
-
-if (Test-Path $configPath) { Write-Host "JSON configuration successfully created" } else { Write-Host "JSON configuration FAILED" }
-Read-Host -Prompt "Press Enter to exit"
-exit
+[void]$gridCoordinates.ShowDialog()
