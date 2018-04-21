@@ -2,7 +2,7 @@
 
 $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
 $missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
-
+#$searchBase = @()
 
 # Main Functions
 
@@ -209,27 +209,24 @@ $outputPane.text += ($menu.Item($x), "`n")
 
 }
 
-function reconGrid ($outPane) {
+function reconGrid ($outputPane) {
 
-$outPane.text += "CURRENT RECON:`n"
-reconDirectory $outPane
-reconBase $outPane
+$outputPane.text += "CURRENT RECON:`n"
+reconDirectory $outputPane
+reconBase $outputPane
 
 }
 
 # User input functions
 
-function setConfig ($outPane, $textBox_filter, $textBox_OU, $textBox_DC1, $textBox_DC2, $textBox_OpsDir) {
+function setConfig ($outputPane, $textBox_filter, $textBox_OU, $textBox_OpsDir) {
 
-
+[string]$searchString = $textBox_OU.text
+$searchBase += Get-ADObject -Filter "Name -eq '$searchString'" | select Name, DistinguishedName
 $filterTarget = $textBox_filter.text
 $opsDir = $textBox_OpsDir.text
-$searchBase00 = $textBox_OU.text
-$searchBase01 = $textBox_DC1.text
-$searchBase02 = $textBox_DC2.text
 $configPath = "${psscriptroot}\fireDirectionalControl.json"
 $advanceParty = "${psscriptroot}\advanceParty.ps1"
-$searchBase = @("OU=$searchBase00,DC=$searchBase01,DC=$searchBase02")
 
 # Create hashtable out of user input
 
@@ -246,13 +243,6 @@ $storedSettings = @{
 # Convert hashtable to JSON and save to a file
 
 $storedSettings | ConvertTo-Json | Out-File $configPath
-
-}
-
-function testSet ( $outPane ) {
-
-
-
 
 }
 
