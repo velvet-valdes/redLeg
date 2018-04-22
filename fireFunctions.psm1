@@ -130,6 +130,11 @@ $storedSettings = @{
 
 }
 $storedSettings | ConvertTo-Json | Out-File $configPath
+showRedLeg $outputPane
+$outputPane.text += "`n`nGrid Coordinates Set!"
+Start-Sleep -s 3
+showRedLeg $outputpane
+reconGrid $outputpane
 
 }
 
@@ -158,8 +163,11 @@ $outputPane.text += $searchBase | ft | out-string
 function clearGrid($outputPane) { 
 
 $searchBase.Clear()
-showGridCheck $outputpane
+showRedLeg $outputpane
 $outputPane.text += "`nSearchBase is CLEAR!"
+Start-Sleep -s 3
+showRedLeg $outputpane
+reconGrid $outputpane
 
 }
 
