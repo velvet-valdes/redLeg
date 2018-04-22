@@ -10,7 +10,8 @@ $gridCoordinates.ClientSize      = '900,550'
 $gridCoordinates.text            = "gridCoordinates"
 $gridCoordinates.TopMost         = $false
 
-$outputPane                      = New-Object system.Windows.Forms.Label
+$outputPane                      = New-Object system.Windows.Forms.TextBox
+$outputPane.Multiline            = $true
 $outputPane.BackColor            = "#000000"
 $outputPane.BorderStyle          = 'Fixed3D'
 $outputPane.AutoSize             = $false
@@ -105,12 +106,11 @@ $gridCoordinates.controls.AddRange(@($outputPane,$textBox_OpsDir,$label_OpsDir,$
 
 #region gui events {
 $gridCoordinates.Add_Load({ showRedleg $outputPane ; preflightCheck $outputPane; reconGrid $outputPane  })
-#$writeConfig.Add_Click({ setGrid $outputPane $textBox_filter $textBox_OU $textBox_OpsDir })
 $writeConfig.Add_Click({ setGrid $outputPane $textBox_filter $textBox_OpsDir })
 $readConfig.Add_Click({ getGrid $outputPane })
 $push.Add_Click({ pushGrid $outputPane $textBox_OU })
 $pop.Add_Click({ popGrid $outputPane $textBox_OU })
-$clear.Add_Click({ clearShells $outputPane })
+$clear.Add_Click({ clearGrid $outputPane })
 #endregion events }
 
 #endregion GUI }
