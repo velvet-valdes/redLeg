@@ -106,9 +106,11 @@ $gridCoordinates.controls.AddRange(@($outputPane,$textBox_OpsDir,$label_OpsDir,$
 #region gui events {
 $gridCoordinates.Add_Load({ showRedleg $outputPane ; preflightCheck $outputPane; reconGrid $outputPane  })
 #$writeConfig.Add_Click({ setGrid $outputPane $textBox_filter $textBox_OU $textBox_OpsDir })
-$writeConfig.Add_Click({ setGrid $outputPane $textBox_OU })
+$writeConfig.Add_Click({ setGrid $outputPane $textBox_filter $textBox_OpsDir })
 $readConfig.Add_Click({ getGrid $outputPane })
-$push.Add_Click({ addGrid $outputPane $textBox_OU })
+$push.Add_Click({ pushGrid $outputPane $textBox_OU })
+$pop.Add_Click({ popGrid $outputPane $textBox_OU })
+$clear.Add_Click({ clearShells $outputPane })
 #endregion events }
 
 #endregion GUI }

@@ -108,7 +108,7 @@ $outputPane.text = "Mission Parameters:`n`nSearch Base: $searchBase`n`nSelected 
 
 } #renamed from gridCheck
 
-function addGrid($outputPane, $textBox_OU) {
+function pushGrid($outputPane, $textBox_OU) {
 
 [string]$searchString = $textBox_OU.text
 $selection = Get-ADObject -Filter "Name -eq '$searchString'" | select Name, DistinguishedName
@@ -119,18 +119,16 @@ $outputPane.text += $searchBase.name
 
  }
 
-<#
-function setGrid ($outputPane, $textBox_filter, $textBox_OU, $textBox_OpsDir) {
+ function popGrid($outputPane, $textBox_OU) {
 
-[string]$searchString = $textBox_OU.text
-$searchBase += Get-ADObject -Filter "Name -eq '$searchString'" | select Name, DistinguishedName
+ }
+
+function setGrid ($outputPane, $textBox_filter, $textBox_OpsDir) {
+
 $filterTarget = $textBox_filter.text
 $opsDir = $textBox_OpsDir.text
 $configPath = "${psscriptroot}\fireDirectionalControl.json"
 $advanceParty = "${psscriptroot}\advanceParty.ps1"
-
-# Create hashtable out of user input
-
 $storedSettings = @{
 
   ops = $opsDir
@@ -140,37 +138,6 @@ $storedSettings = @{
   search = $searchBase
 
 }
-
-# Convert hashtable to JSON and save to a file
-
-$storedSettings | ConvertTo-Json | Out-File $configPath
-
-} 
-#>
-
-function setGrid ($outputPane, $textBox_filter, $textBox_OU, $textBox_OpsDir) {
-
-#[string]$searchString = $textBox_OU.text
-#$searchBase += Get-ADObject -Filter "Name -eq '$searchString'" | select Name, DistinguishedName
-$filterTarget = $textBox_filter.text
-$opsDir = $textBox_OpsDir.text
-$configPath = "${psscriptroot}\fireDirectionalControl.json"
-$advanceParty = "${psscriptroot}\advanceParty.ps1"
-
-# Create hashtable out of user input
-
-$storedSettings = @{
-
-  ops = $opsDir
-  payload = $opsDir
-  ap = $advanceParty
-  Target = $filterTarget
-  search = $searchBase
-
-}
-
-# Convert hashtable to JSON and save to a file
-
 $storedSettings | ConvertTo-Json | Out-File $configPath
 
 }
