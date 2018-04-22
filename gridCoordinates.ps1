@@ -10,8 +10,10 @@ $gridCoordinates.ClientSize      = '900,550'
 $gridCoordinates.text            = "gridCoordinates"
 $gridCoordinates.TopMost         = $false
 
-$outputPane                      = New-Object system.Windows.Forms.TextBox
+$outputPane                      = New-Object system.Windows.Forms.RichTextBox
 $outputPane.Multiline            = $true
+$outputPane.WordWrap             = $false
+$outputPane.ScrollBars
 $outputPane.BackColor            = "#000000"
 $outputPane.BorderStyle          = 'Fixed3D'
 $outputPane.AutoSize             = $false
