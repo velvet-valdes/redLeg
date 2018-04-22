@@ -98,36 +98,21 @@ function getGrid($outputPane) {
 
 $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
 $missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
-$searchbase = $missionParameters.search.DistinguishedName
-$searchOU = $missionParameters.search.Name
-$filterTarget = $missionParameters.Target
-$opsDir = $missionParameters.ops
-$advanceParty = $missionParameters.ap
-$payload = $missionParameters.payload
-$outputPane.text = "Mission Parameters:`n`nSearch Base: $searchBase`n`nSelected OU(s): $searchOU`n`nFilter Target: $filterTarget`n`nOperations Directory: $opsDir`n`nPayload Path: $payload`n`nAdvance Party: $advanceParty"
+showRedLeg $outputPane
+$outputPane.text += "Organizational Unit(s): "
+$outputPane.text += $missionParameters.search.Name
+$outputPane.text += "`n`nSearch Base(s): "
+$outputPane.text += $missionParameters.search.DistinguishedName
+$outputPane.text += "`n`nTarget Filter String: "
+$outputPane.text += $missionParameters.Target
+$outputPane.text += "`n`nOperations Directory: "
+$outputPane.text += $missionParameters.ops
+$outputPane.text += "`n`nPayload: "
+$outputPane.text += $missionParameters.payload
+$outputPane.text += "`n`nAdvance Party: "
+$outputPane.text += $missionParameters.ap
 
 } #renamed from gridCheck
-
-function pushGrid($outputPane, $textBox_OU) {
-
-[string]$searchString = $textBox_OU.text
-$selection = Get-ADObject -Filter "Name -eq '$searchString'" | select Name, DistinguishedName
-if (!($searchBase -match $selection)) { $searchBase.Add($selection) }
-write-host $searchBase.ToArray()
-$outputPane.text = "Current Search Base:`n" 
-$outputPane.text += $searchBase.name
-
- }
-
-function popGrid($outputPane, $textBox_OU) {
-
-
-$searchBase.RemoveAt($searchBase.count - 1)
-write-host $searchBase.ToArray()
-$outputPane.text = "Current Search Base:`n" 
-$outputPane.text += $searchBase.name
-
- }
 
 function setGrid ($outputPane, $textBox_filter, $textBox_OpsDir) {
 
@@ -145,6 +130,36 @@ $storedSettings = @{
 
 }
 $storedSettings | ConvertTo-Json | Out-File $configPath
+
+}
+
+function pushGrid($outputPane, $textBox_OU) {
+
+[string]$searchString = $textBox_OU.text
+$selection = Get-ADObject -Filter "Name -eq '$searchString'" | select Name, DistinguishedName
+if (!($searchBase -match $selection)) { $searchBase.Add($selection) }
+showGridCheck $outputpane
+$outputPane.text += "Current Search Base Values:`n" 
+$outputPane.text += $searchBase | ft | out-string
+
+ }
+
+function popGrid($outputPane, $textBox_OU) {
+
+
+$searchBase.RemoveAt($searchBase.count - 1)
+showGridCheck $outputpane
+$outputPane.text += "Current Search Base Values:`n" 
+#$outputPane.text += $searchBase.name
+$outputPane.text += $searchBase | ft | out-string
+
+ }
+
+function clearGrid($outputPane) { 
+
+$searchBase.Clear()
+showGridCheck $outputpane
+$outputPane.text += "`nSearchBase is CLEAR!"
 
 }
 
@@ -228,45 +243,10 @@ Get-Process -Name powershell | Where-Object -FilterScript { $_.Id -ne $PID } | S
 
 }
 
-# Active Directory functions
-
-function reconDirectory ($outputPane) {
-
-$searchbase = @()
-$menu = @{}
-$OUlist = Get-ADObject -Filter 'ObjectClass -eq "organizationalunit"’ | Select-Object Name,DistinguishedName
-for ($i = 1; $i -le $OUlist.count; $i++) { $menu.Add($i,($OUlist[$i - 1].Name)) }
-$outputPane.text += "`nOrganizational Units:`n"
-
-for ($x = 1; $x -le $menu.count; $x++) { 
-
-$outputPane.text += ($menu.Item($x), "`n")
-
-}
-
-}
-
-function reconBase ($outputPane) {
-
-$searchbase = @()
-$menu = @{}
-$OUlist = Get-ADObject -Filter 'ObjectClass -eq "organizationalunit"’ | Select-Object Name,DistinguishedName
-for ($i = 1; $i -le $OUlist.count; $i++) { $menu.Add($i,($OUlist[$i - 1].DistinguishedName)) }
-$outputPane.text += "`nSearchbase Candidates:`n"
-
-for ($x = 1; $x -le $menu.count; $x++) { 
-
-$outputPane.text += ($menu.Item($x), "`n")
-
-}
-
-}
-
 function reconGrid ($outputPane) {
 
 $outputPane.text += "CURRENT RECON:`n"
-reconDirectory $outputPane
-reconBase $outputPane
+$outputPane.text += Get-ADObject -Filter 'ObjectClass -eq "organizationalunit"’ | ft | out-string
 
 }
 
