@@ -187,6 +187,8 @@ Start-Process powershell -ArgumentList "-noexit -command $Scriptblock"
 
 # Info functions
 
+function preflightCheck($outputPane) {
+
 function versionCheck($outputPane) {
 
 $currentVersion = $PSVersionTable.PSVersion
@@ -229,8 +231,6 @@ else
 }
 
 }
-
-function preflightCheck($outputPane) {
 
 versionCheck $outputPane
 jsonCheck $outputPane
