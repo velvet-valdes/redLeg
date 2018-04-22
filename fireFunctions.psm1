@@ -119,7 +119,13 @@ $outputPane.text += $searchBase.name
 
  }
 
- function popGrid($outputPane, $textBox_OU) {
+function popGrid($outputPane, $textBox_OU) {
+
+
+$searchBase.RemoveAt($searchBase.count - 1)
+write-host $searchBase.ToArray()
+$outputPane.text = "Current Search Base:`n" 
+$outputPane.text += $searchBase.name
 
  }
 
