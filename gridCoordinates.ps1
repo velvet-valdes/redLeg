@@ -6,7 +6,7 @@ Add-Type -AssemblyName System.Windows.Forms
 #region begin GUI{ 
 
 $gridCoordinates                 = New-Object system.Windows.Forms.Form
-$gridCoordinates.ClientSize      = '900,450'
+$gridCoordinates.ClientSize      = '900,550'
 $gridCoordinates.text            = "gridCoordinates"
 $gridCoordinates.TopMost         = $false
 
@@ -15,40 +15,10 @@ $outputPane.BackColor            = "#000000"
 $outputPane.BorderStyle          = 'Fixed3D'
 $outputPane.AutoSize             = $false
 $outputPane.width                = 450
-$outputPane.height               = 350
+$outputPane.height               = 360
 $outputPane.location             = New-Object System.Drawing.Point(400,50)
 $outputPane.Font                 = 'Courier,10'
 $outputPane.ForeColor            = "#7ed321"
-
-$textBox_filter                  = New-Object system.Windows.Forms.TextBox
-$textBox_filter.multiline        = $false
-$textBox_filter.width            = 340
-$textBox_filter.height           = 20
-$textBox_filter.location         = New-Object System.Drawing.Point(30,100)
-$textBox_filter.Font             = 'Microsoft Sans Serif,10'
-
-$label_filter                    = New-Object system.Windows.Forms.Label
-$label_filter.text               = "Active Directory Filter String"
-$label_filter.AutoSize           = $true
-$label_filter.width              = 25
-$label_filter.height             = 10
-$label_filter.location           = New-Object System.Drawing.Point(30,70)
-$label_filter.Font               = 'Microsoft Sans Serif,10'
-
-$textBox_OU                      = New-Object system.Windows.Forms.TextBox
-$textBox_OU.multiline            = $false
-$textBox_OU.width                = 340
-$textBox_OU.height               = 20
-$textBox_OU.location             = New-Object System.Drawing.Point(30,170)
-$textBox_OU.Font                 = 'Microsoft Sans Serif,10'
-
-$label_OU                        = New-Object system.Windows.Forms.Label
-$label_OU.text                   = "Organizational Unit"
-$label_OU.AutoSize               = $true
-$label_OU.width                  = 25
-$label_OU.height                 = 10
-$label_OU.location               = New-Object System.Drawing.Point(30,140)
-$label_OU.Font                   = 'Microsoft Sans Serif,10'
 
 $textBox_OpsDir                  = New-Object system.Windows.Forms.TextBox
 $textBox_OpsDir.multiline        = $false
@@ -65,26 +35,80 @@ $label_OpsDir.height             = 10
 $label_OpsDir.location           = New-Object System.Drawing.Point(30,210)
 $label_OpsDir.Font               = 'Microsoft Sans Serif,10'
 
+$textBox_OU                      = New-Object system.Windows.Forms.TextBox
+$textBox_OU.multiline            = $false
+$textBox_OU.width                = 340
+$textBox_OU.height               = 20
+$textBox_OU.location             = New-Object System.Drawing.Point(30,170)
+$textBox_OU.Font                 = 'Microsoft Sans Serif,10'
+
+$label_OU                        = New-Object system.Windows.Forms.Label
+$label_OU.text                   = "Organizational Unit"
+$label_OU.AutoSize               = $true
+$label_OU.width                  = 25
+$label_OU.height                 = 10
+$label_OU.location               = New-Object System.Drawing.Point(30,140)
+$label_OU.Font                   = 'Microsoft Sans Serif,10'
+
+$textBox_filter                  = New-Object system.Windows.Forms.TextBox
+$textBox_filter.multiline        = $false
+$textBox_filter.width            = 340
+$textBox_filter.height           = 20
+$textBox_filter.location         = New-Object System.Drawing.Point(30,100)
+$textBox_filter.Font             = 'Microsoft Sans Serif,10'
+
+$label_filter                    = New-Object system.Windows.Forms.Label
+$label_filter.text               = "Active Directory Filter String"
+$label_filter.AutoSize           = $true
+$label_filter.width              = 25
+$label_filter.height             = 10
+$label_filter.location           = New-Object System.Drawing.Point(30,70)
+$label_filter.Font               = 'Microsoft Sans Serif,10'
+
 $readConfig                      = New-Object system.Windows.Forms.Button
 $readConfig.text                 = "READ CONFIG"
 $readConfig.width                = 130
 $readConfig.height               = 65
-$readConfig.location             = New-Object System.Drawing.Point(30,335)
+$readConfig.location             = New-Object System.Drawing.Point(30,450)
 $readConfig.Font                 = 'Microsoft Sans Serif,10'
 
 $writeConfig                     = New-Object system.Windows.Forms.Button
 $writeConfig.text                = "WRITE CONFIG"
 $writeConfig.width               = 130
 $writeConfig.height              = 65
-$writeConfig.location            = New-Object System.Drawing.Point(240,335)
+$writeConfig.location            = New-Object System.Drawing.Point(240,450)
 $writeConfig.Font                = 'Microsoft Sans Serif,10'
 
-$gridCoordinates.controls.AddRange(@($outputPane,$label_filter,$textBox_filter,$label_OU,$textBox_OU,$label_OpsDir,$textBox_OpsDir,$readConfig,$writeConfig))
+$push                            = New-Object system.Windows.Forms.Button
+$push.text                       = "PUSH"
+$push.width                      = 130
+$push.height                     = 65
+$push.location                   = New-Object System.Drawing.Point(400,450)
+$push.Font                       = 'Microsoft Sans Serif,10'
+
+$pop                             = New-Object system.Windows.Forms.Button
+$pop.text                        = "POP"
+$pop.width                       = 130
+$pop.height                      = 65
+$pop.location                    = New-Object System.Drawing.Point(560,450)
+$pop.Font                        = 'Microsoft Sans Serif,10'
+
+$clear                           = New-Object system.Windows.Forms.Button
+$clear.text                      = "CLEAR"
+$clear.width                     = 130
+$clear.height                    = 65
+$clear.location                  = New-Object System.Drawing.Point(720,450)
+$clear.Font                      = 'Microsoft Sans Serif,10'
+
+$gridCoordinates.controls.AddRange(@($outputPane,$textBox_OpsDir,$label_OpsDir,$textBox_OU,$label_OU,$textBox_filter,$label_filter,$readConfig,$writeConfig,$push,$pop,$clear))
+
 
 #region gui events {
 $gridCoordinates.Add_Load({ showRedleg $outputPane ; preflightCheck $outputPane; reconGrid $outputPane  })
-$writeConfig.Add_Click({ setGrid $outputPane $textBox_filter $textBox_OU $textBox_OpsDir })
+#$writeConfig.Add_Click({ setGrid $outputPane $textBox_filter $textBox_OU $textBox_OpsDir })
+$writeConfig.Add_Click({ setGrid $outputPane $textBox_OU })
 $readConfig.Add_Click({ getGrid $outputPane })
+$push.Add_Click({ addGrid $outputPane $textBox_OU })
 #endregion events }
 
 #endregion GUI }
