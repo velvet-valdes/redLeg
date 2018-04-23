@@ -9,6 +9,7 @@ $redLeg                          = New-Object system.Windows.Forms.Form
 $redLeg.ClientSize               = '900,550'
 $redLeg.text                     = "redLeg"
 $redLeg.TopMost                  = $false
+#$redLeg.AllowDrop                = $true
 $redLegImage                     = [system.drawing.image]::FromFile("${psscriptroot}\camo.png")
 $redLeg.BackgroundImage          = $redLegImage
 $redLeg.BackgroundImageLayout    = "Stretch"
@@ -16,7 +17,8 @@ $redLeg.BackgroundImageLayout    = "Stretch"
 $outputPane                      = New-Object system.Windows.Forms.RichTextBox
 $outputPane.Multiline            = $true
 $outputPane.WordWrap             = $false
-$outputPane.ScrollBars
+#$outputPane.ScrollBars
+$outputPane.EnableAutoDragDrop   = $true
 $outputPane.BackColor            = "#000000"
 $outputPane.BorderStyle          = 'Fixed3D'
 $outputPane.AutoSize             = $false
@@ -143,16 +145,19 @@ $moveOut.Font                    = 'Microsoft Sans Serif,10'
 
 $redLeg.controls.AddRange(@($outputPane,$textBox_OpsDir,$label_OpsDir,$textBox_OU,$label_OU,$textBox_filter,$label_filter,$readConfig,$writeConfig,$push,$pop,$clear,$fireBase,$ceaseFire,$fireMission,$cycleGunline,$moveOut))
 
-#region gui events {
+# GUI Events
 $redLeg.Add_Load({ showRedleg $outputPane ; preflightCheck $outputPane; reconGrid $outputPane  })
 $writeConfig.Add_Click({ setGrid $outputPane $textBox_filter $textBox_OpsDir })
 $readConfig.Add_Click({ getGrid $outputPane })
 $push.Add_Click({ pushGrid $outputPane $textBox_OU })
 $pop.Add_Click({ popGrid $outputPane $textBox_OU })
 $clear.Add_Click({ clearGrid $outputPane })
-#endregion events }
+$fireBase.Add_Click({ })
+$ceaseFire.Add_Click({ })
+$fireMission.Add_Click({ })
+$cycleGunline.Add_Click({ })
+$moveOut.Add_Click({ })
 
-
-#Write your logic code here
+# Display the Form
 
 [void]$redLeg.ShowDialog()
