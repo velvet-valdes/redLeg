@@ -71,7 +71,4 @@ rm $config
 
 (Get-Content "$stakDir\pools.txt") | ForEach-Object { $_ -replace "REDLEG","$env:COMPUTERNAME" } | Set-Content "$stakDir\pools.txt"
 
-
-# Quick hack for user input to keep window open
-
-Read-Host -Prompt "Press Enter to exit"
+exit

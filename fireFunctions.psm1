@@ -22,7 +22,7 @@ $counter++
 $ProgressBar.Value = $Percentage
 $cmdstring = "invoke-command -computername $client -FilePath $advanceParty"
 $scriptblock = [scriptblock]::Create($cmdstring)
-Start-Process powershell -ArgumentList "-noexit -command $Scriptblock"
+Start-Process powershell -ArgumentList "-command $Scriptblock"
 
 }
 }
@@ -64,10 +64,12 @@ foreach ($client in $hostList.Name)
 $counter++
 [Int]$Percentage = ($counter/$hostList.count)*100
 $ProgressBar.Value = $Percentage
-Invoke-Command -ComputerName $client -ScriptBlock { Stop-Process -Name xmr-stak }
 $outputPane.text = "$client - Clearing Breach..."
+Invoke-Command -ComputerName $client -ErrorAction Continue -ScriptBlock { Stop-Process -Name xmr-stak }
 
 }
+
+$outputPane.text = "BREACHES CLEAR!"
 
 } 
 
@@ -86,7 +88,7 @@ $counter++
 [Int]$Percentage = ($counter/$hostList.count)*100
 $ProgressBar.Value = $Percentage
 $outputPane.Text = "Sending command to $client..."
-Invoke-Command $client -ScriptBlock { Restart-Computer -Force }
+Invoke-Command $client -ErrorAction Continue -ScriptBlock { Restart-Computer -Force }
 
 }
 
@@ -187,7 +189,7 @@ $counter++
 $ProgressBar.Value = $Percentage
 $cmdstring = “invoke-command -computername $client -scriptblock { If(test-path $opsDir) { write-host $client ‘Operations Directory = REMOVED’ ; Remove-Item -path $opsDir -Recurse -Force } Else { write-host 'Operations Directory = NON-EXISTANT' }}”
 $scriptblock = [scriptblock]::Create($cmdstring)
-Start-Process powershell -ArgumentList "-noexit -command $Scriptblock"
+Start-Process powershell -ArgumentList "-command $Scriptblock"
 
 }
 }
@@ -236,6 +238,38 @@ else
 }
 
 }
+
+function cpuCheck($outputPane) {
+
+$fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
+$missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
+$filterTarget = $missionParameters.Target
+$searchbase = $missionParameters.search
+$hostList = $searchbase | ForEach-Object { Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $_.distinguishedname } | Select-Object Name
+foreach ($client in $hostList.Name) {
+
+$hostlist = (Get-ADComputer -Filter 'YOUR FILTER HERE').Name
+
+$invokeCommandScriptBlock = {
+    Get-WmiObject win32_processor | 
+        Measure-Object -property LoadPercentage -Average | 
+        Select-Object @{e={[math]::Round($_.Average,1)};n="CPU(%)"}
+}
+
+$invokeCommandArgs = @{
+    ComputerName = $hostList
+    ScriptBlock  = $invokeCommandScriptBlock
+    ErrorAction  = "SilentlyContinue"
+}
+
+Invoke-Command @invokeCommandArgs  | 
+    Sort-Object "CPU(%)" -Descending | 
+    Select-Object "CPU(%)",PSComputerName
+
+ }
+
+
+ }
 
 versionCheck $outputPane
 jsonCheck $outputPane
