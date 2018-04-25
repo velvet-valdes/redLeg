@@ -39,6 +39,7 @@ if (!(Test-Path $config))
 
 {
 
+  #$url = "https://gist.github.com/velvet-valdes/7a0a29bff717de3209e85abfa203ddd1/archive/10e4f069e995485beb80ed0854dc6a5c931ab44b.zip"
   $url = "https://github.com/velvet-valdes/dump/releases/download/v0.1-alpha/dump.zip"
   $start_time = Get-Date
 

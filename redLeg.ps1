@@ -9,10 +9,6 @@ $redLeg                          = New-Object system.Windows.Forms.Form
 $redLeg.ClientSize               = '900,600'
 $redLeg.text                     = "redLeg"
 $redLeg.TopMost                  = $false
-#$redLeg.AllowDrop                = $true
-#$redLegImage                     = [system.drawing.image]::FromFile("${psscriptroot}\camo.png")
-#$redLeg.BackgroundImage          = $redLegImage
-#$redLeg.BackgroundImageLayout    = "Stretch"
 
 $outputPane                      = New-Object system.Windows.Forms.RichTextBox
 $outputPane.Multiline            = $true
@@ -151,7 +147,7 @@ $redLeg.controls.AddRange(@($outputPane,$textBox_OpsDir,$label_OpsDir,$textBox_O
 
 # GUI Events
 
-$redLeg.Add_Load({ showRedleg $outputPane ; preflightCheck $outputPane; reconGrid $outputPane  })
+$redLeg.Add_Load({ showRedleg $outputPane ; preflightCheck $outputPane; reconGrid $outputPane; })
 $writeConfig.Add_Click({ setGrid $outputPane $textBox_filter $textBox_OpsDir })
 $readConfig.Add_Click({ getGrid $outputPane })
 $push.Add_Click({ pushGrid $outputPane $textBox_OU })
