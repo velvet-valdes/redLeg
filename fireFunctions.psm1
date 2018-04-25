@@ -95,6 +95,8 @@ $missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFr
 $filterTarget = $missionParameters.Target
 $searchbase = $missionParameters.search
 $hostList = $searchbase | ForEach-Object { Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $_.distinguishedname } | Select-Object Name
+showCycleGunline $outputPane
+
 foreach ($client in $hostList.Name)
 
 {
@@ -104,11 +106,11 @@ $counter++
 $ProgressBar.Value = $Percentage
 $outputPane.Text += "Sending command to $client...`n"
 Invoke-Command $client -ErrorAction Continue -ScriptBlock { Restart-Computer -Force }
-$outputPane.text += "`n`nGUNLINE CYCLED!"
+
 
 }
 
-#Get-Process -Name powershell | Where-Object -FilterScript { $_.Id -ne $PID } | Stop-Process -Passthru
+$outputPane.text += "`n`nGUNLINE CYCLED!"
 
 } 
 
