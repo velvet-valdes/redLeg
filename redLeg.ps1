@@ -6,18 +6,17 @@ Add-Type -AssemblyName System.Windows.Forms
 #region begin GUI{ 
 
 $redLeg                          = New-Object system.Windows.Forms.Form
-$redLeg.ClientSize               = '900,550'
+$redLeg.ClientSize               = '900,600'
 $redLeg.text                     = "redLeg"
 $redLeg.TopMost                  = $false
 #$redLeg.AllowDrop                = $true
-$redLegImage                     = [system.drawing.image]::FromFile("${psscriptroot}\camo.png")
-$redLeg.BackgroundImage          = $redLegImage
-$redLeg.BackgroundImageLayout    = "Stretch"
+#$redLegImage                     = [system.drawing.image]::FromFile("${psscriptroot}\camo.png")
+#$redLeg.BackgroundImage          = $redLegImage
+#$redLeg.BackgroundImageLayout    = "Stretch"
 
 $outputPane                      = New-Object system.Windows.Forms.RichTextBox
 $outputPane.Multiline            = $true
 $outputPane.WordWrap             = $false
-#$outputPane.ScrollBars
 $outputPane.EnableAutoDragDrop   = $true
 $outputPane.BackColor            = "#000000"
 $outputPane.BorderStyle          = 'Fixed3D'
@@ -140,23 +139,29 @@ $moveOut                         = New-Object system.Windows.Forms.Button
 $moveOut.text                    = "OUT"
 $moveOut.width                   = 90
 $moveOut.height                  = 45
-$moveOut.location                = New-Object System.Drawing.Point(281,375)
+$moveOut.location                = New-Object System.Drawing.Point(280,375)
 $moveOut.Font                    = 'Microsoft Sans Serif,10'
 
-$redLeg.controls.AddRange(@($outputPane,$textBox_OpsDir,$label_OpsDir,$textBox_OU,$label_OU,$textBox_filter,$label_filter,$readConfig,$writeConfig,$push,$pop,$clear,$fireBase,$ceaseFire,$fireMission,$cycleGunline,$moveOut))
+$progressBar                     = New-Object system.Windows.Forms.ProgressBar
+$progressBar.width               = 820
+$progressBar.height              = 20
+$progressBar.location            = New-Object System.Drawing.Point(30,550)
+
+$redLeg.controls.AddRange(@($outputPane,$textBox_OpsDir,$label_OpsDir,$textBox_OU,$label_OU,$textBox_filter,$label_filter,$readConfig,$writeConfig,$push,$pop,$clear,$fireBase,$ceaseFire,$fireMission,$cycleGunline,$moveOut,$progressBar))
 
 # GUI Events
+
 $redLeg.Add_Load({ showRedleg $outputPane ; preflightCheck $outputPane; reconGrid $outputPane  })
 $writeConfig.Add_Click({ setGrid $outputPane $textBox_filter $textBox_OpsDir })
 $readConfig.Add_Click({ getGrid $outputPane })
 $push.Add_Click({ pushGrid $outputPane $textBox_OU })
 $pop.Add_Click({ popGrid $outputPane $textBox_OU })
-$clear.Add_Click({ clearGrid $outputPane })
-$fireBase.Add_Click({ })
-$ceaseFire.Add_Click({ })
-$fireMission.Add_Click({ })
-$cycleGunline.Add_Click({ })
-$moveOut.Add_Click({ })
+$clear.Add_Click({ clearGrid $outputPane $progressBar })
+$fireBase.Add_Click({ fireBase $outputPane $progressBar })
+$ceaseFire.Add_Click({ ceaseFire $outputPane $progressBar })
+$fireMission.Add_Click({ fireMission $outputPane $progressBar })
+$cycleGunline.Add_Click({ cycleGunline $outputPane $progressBar })
+$moveOut.Add_Click({ moveOut $outputPane $progressBar })
 
 # Display the Form
 

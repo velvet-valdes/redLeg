@@ -49,7 +49,7 @@ Start-Process powershell -ArgumentList "-noexit -command  $Scriptblock"
 }
 }
 
-function clearBreach($outputPane, $progressBar) {
+function ceaseFire($outputPane, $progressBar) {
 
 $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
 $missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
@@ -71,7 +71,7 @@ $outputPane.text = "$client - Clearing Breach..."
 
 } # rename - ceaseFire
 
-function reinitGunline($outputPane, $progressBar) {
+function cycleGunline($outputPane, $progressBar) {
 
 $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
 $missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
@@ -192,8 +192,6 @@ Start-Process powershell -ArgumentList "-noexit -command $Scriptblock"
 
 }
 }
-
-# Info functions
 
 function preflightCheck($outputPane) {
 
