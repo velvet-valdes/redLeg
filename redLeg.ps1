@@ -149,7 +149,7 @@ $redLeg.controls.AddRange(@($outputPane,$textBox_OpsDir,$label_OpsDir,$textBox_O
 
 $redLeg.Add_Load({ showRedleg $outputPane ; preflightCheck $outputPane; reconGrid $outputPane; })
 $writeConfig.Add_Click({ setGrid $outputPane $textBox_filter $textBox_OpsDir })
-$readConfig.Add_Click({ getGrid $outputPane })
+$readConfig.Add_Click({ readConfig $outputPane })
 $push.Add_Click({ pushGrid $outputPane $textBox_OU })
 $pop.Add_Click({ popGrid $outputPane $textBox_OU })
 $clear.Add_Click({ clearGrid $outputPane $progressBar })

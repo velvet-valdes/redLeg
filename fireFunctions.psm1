@@ -116,7 +116,7 @@ function getGrid($outputPane) {
 
 $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
 $missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
-showRedLeg $outputPane
+$outputPane.text += "MISSION PARAMETERS:`n`n"
 $outputPane.text += "Organizational Unit(s): "
 $outputPane.text += $missionParameters.search.Name
 $outputPane.text += "`n`nSearch Base(s): "
@@ -326,6 +326,14 @@ function reconGrid ($outputPane) {
 
 $outputPane.text += "CURRENT RECON:`n"
 $outputPane.text += Get-ADObject -Filter 'ObjectClass -eq "organizationalunit"’ | ft | out-string
+
+}
+
+function readConfig ($outputPane) {
+
+showGridCheck $outputPane
+reconGrid $outputPane
+getGrid $outputPane
 
 }
 
