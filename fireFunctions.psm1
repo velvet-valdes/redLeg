@@ -141,7 +141,7 @@ reconGrid $outputpane
 function pushGrid($outputPane, $textBox_OU) {
 
 [string]$searchString = $textBox_OU.text
-$selection = Get-ADObject -Filter "Name -eq '$searchString'" | select Name, DistinguishedName
+$selection = Get-ADObject -Filter "Name -eq '$searchString'" | ? {$_.objectclass -eq 'organizationalunit'} | Select Name, DistinguishedName
 if (!($searchBase -match $selection)) { $searchBase.Add($selection) }
 showGridCheck $outputpane
 $outputPane.text += "Current Search Base Values:`n" 
@@ -155,7 +155,6 @@ function popGrid($outputPane, $textBox_OU) {
 $searchBase.RemoveAt($searchBase.count - 1)
 showGridCheck $outputpane
 $outputPane.text += "Current Search Base Values:`n" 
-#$outputPane.text += $searchBase.name
 $outputPane.text += $searchBase | ft | out-string
 
  }
