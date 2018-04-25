@@ -38,7 +38,7 @@ Clicking the "BASE" button calls the fireBase function and begins the processes 
 Clicking the "FIRE MISSION" button sends the command for all guns in the JSON config file to fire for effect.
 
 ## Ceasfire
-Clicking the "CEASE" button sends the command for all guns in the JSON config file to cease firing.
+Clicking the "CEASE" button sends the command for all guns in the JSON config file to cease firing in parallel.
 
 ## Restart the cannons
 When needed, clicking the "CYCLE" button will send the command for all guns in the JSON config file to re-initialize all critical sub-systems and power.
