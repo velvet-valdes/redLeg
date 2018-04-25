@@ -69,7 +69,7 @@ $outputPane.text = "$client - Clearing Breach..."
 
 }
 
-} # rename - ceaseFire
+} 
 
 function cycleGunline($outputPane, $progressBar) {
 
@@ -86,13 +86,13 @@ $counter++
 [Int]$Percentage = ($counter/$hostList.count)*100
 $ProgressBar.Value = $Percentage
 $outputPane.Text = "Sending command to $client..."
-Restart-Computer -ComputerName $client -Force
+Invoke-Command $client -ScriptBlock { Restart-Computer -Force }
 
 }
 
 Get-Process -Name powershell | Where-Object -FilterScript { $_.Id -ne $PID } | Stop-Process -Passthru
 
-} # rename - cycleGunline
+} 
 
 function getGrid($outputPane) {
 
@@ -112,7 +112,7 @@ $outputPane.text += $missionParameters.payload
 $outputPane.text += "`n`nAdvance Party: "
 $outputPane.text += $missionParameters.ap
 
-} #renamed from gridCheck
+} 
 
 function setGrid ($outputPane, $textBox_filter, $textBox_OpsDir) {
 
