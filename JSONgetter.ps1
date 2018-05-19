@@ -1,0 +1,29 @@
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+$config =Invoke-RestMethod -Uri https://raw.githubusercontent.com/fireice-uk/xmr-stak/master/xmrstak/config.tpl
+$pool = Invoke-RestMethod -Uri https://raw.githubusercontent.com/fireice-uk/xmr-stak/master/xmrstak/pools.tpl
+
+$head = 'R"===('
+$tail = ')==="'
+
+$config = $config.replace($head, "")
+$config = $config.replace($tail, "")
+$pool = $pool.replace($head, "")
+$pool = $pool.replace($tail, "")
+
+$config.Replace("`n","`r`n") | out-file $outc
+$pool.Replace("`n","`r`n") | out-file $outp
+
+#config.txt
+
+(Get-Content "$outc") | ForEach-Object { $_ -replace '"verbose_level" : 3,','"verbose_level" : 4,' } | Set-Content "$outc"
+(Get-Content "$outc") | ForEach-Object { $_ -replace '"print_motd" : true,','"print_motd" : false,' } | Set-Content "$outc"
+(Get-Content "$outc") | ForEach-Object { $_ -replace '"h_print_time" : 60,','"h_print_time" : 300,' } | Set-Content "$outc"
+(Get-Content "$outc") | ForEach-Object { $_ -replace '"daemon_mode" : false,','"daemon_mode" : true,' } | Set-Content "$outc"
+(Get-Content "$outc") | ForEach-Object { $_ -replace '"flush_stdout" : false,','"flush_stdout" : true,' } | Set-Content "$outc"
+
+#pool.txt
+
+(Get-Content "$outp") | ForEach-Object { $_ -replace '"currency" : "CURRENCY"','"currency" : "aeon7"' } | Set-Content "$outp"
+(Get-Content "$outp") | ForEach-Object { $_ -replace "POOLCONF",'{"pool_address" : "pool.aeonminingpool.com:3335", "wallet_address" : "Wmt1MRyhVkffvWShqLBbytMWfdkRhzago6wHn61cgnMEMDEm5HNMsdmBycerj5iJVFjkEDAFcaVDiUxUEea6EvTJ1fhpkFnQc", "rig_id" : "", "pool_password" : "COMPUTERNAME", "use_nicehash" : false, "use_tls" : false, "tls_fingerprint" : "", "pool_weight" : 1 },
+' } | Set-Content "$outp"
+(Get-Content "$outp") | ForEach-Object { $_ -replace "COMPUTERNAME" ,"$env:COMPUTERNAME" } | Set-Content "$outp"
