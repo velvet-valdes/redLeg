@@ -53,7 +53,7 @@ if (!(Test-Path $config))
 # Unzip contents of file and remove payload
 
 Expand-Archive -LiteralPath $payload -DestinationPath $opsDirectory
-rm $payload
+Remove-Item $payload
 
 
 # Load the newly unzipped directory path into a variable and set the destiation path to extract the config.
@@ -65,7 +65,7 @@ $stakDir = "$opsDirectory\$unzipDir"
 # Unzip contents of file and remove configuration
 
 Expand-Archive -LiteralPath $config -DestinationPath $stakDir
-rm $config
+Remove-Item $config
 
 
 # Modify the contents of the configuration files to change the hardcoded variable in downloaded configs to the hostname of the machine.
