@@ -23,7 +23,7 @@ function fireBase ($outputPane,$progressBar) {
 		[int]$Percentage = ($counter / $hostList.count) * 100
 		$ProgressBar.Value = $Percentage
 		$outputPane.text += "Advance Party en-route to $client...`n"
-		$cmdstring = "invoke-command -computername $client -FilePath $advanceParty"
+		$cmdstring = "invoke-command -computername $client -FilePath $advanceParty -ArgumentList $opsDir"
 		$scriptblock = [scriptblock]::Create($cmdstring)
 		Start-Process powershell -ArgumentList "-command $Scriptblock"
 
@@ -66,7 +66,7 @@ function ceaseFire ($outputPane,$progressBar) {
 	$missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
 	$searchbase = $missionParameters.search
 	$filterTarget = $missionParameters.Target
-	$opsDir = $missionParameters.ops
+	#$opsDir = $missionParameters.ops
 	$hostList = $searchbase | ForEach-Object { Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $_.distinguishedname } | Select-Object Name
 	showCeaseFire $outputPane
 

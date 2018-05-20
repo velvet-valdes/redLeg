@@ -1,4 +1,15 @@
-﻿# Advance Party functions
+﻿# Unified Advance Party Script - Functions included until I find an elegant way to send 
+# separate files for the functions in the AP setup process
+
+# Accept a paramter for the operations directory which is stored in the JSON config
+
+param(
+	[Parameter(Mandatory=$True,
+	ValueFromPipeline=$True)]
+	[string]$opsDirectory
+)
+
+# Advance Party functions
 
 function payload ($destination) { 
 
@@ -68,8 +79,6 @@ function alterPoolTpl ($file) {
 
 # Create an operations directory and hide it.  In the future we will load this variable from another location as this is intended to be called from fireBase.ps1
 
-$opsDirectory = "C:\RSAT"
-
 if (!(Test-Path $opsDirectory))
 {
     mkdir $opsDirectory
@@ -118,3 +127,4 @@ if (!(Test-Path "$stakDir\pools.txt"))
 	alterPoolTpl "$stakDir\pools.txt"
 
 }
+
