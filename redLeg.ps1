@@ -8,7 +8,7 @@ Add-Type -AssemblyName System.Windows.Forms
 $redLeg = New-Object system.Windows.Forms.Form
 $redLeg.ClientSize = '900,600'
 $redLeg.text = "redLeg"
-$redLeg.TopMost = $false
+$redLeg.TopMost = $true
 
 $outputPane = New-Object system.Windows.Forms.RichTextBox
 $outputPane.Multiline = $true
