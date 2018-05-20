@@ -19,7 +19,7 @@ Invoke-RestMethod -Uri https://raw.githubusercontent.com/fireice-uk/xmr-stak/mas
 
 function poolTpl () {
 
-# Get pool template from gihub
+# Get pool template from github
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-RestMethod -Uri https://raw.githubusercontent.com/fireice-uk/xmr-stak/master/xmrstak/pools.tpl
 

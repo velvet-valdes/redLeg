@@ -15,16 +15,15 @@ if (!(Test-Path $opsDirectory))
 
 $payloadDestination = "$opsDirectory\payload.zip"
 
-if (!(Test-Path $payloadDestination)) 
+if (!(Test-Path "$opsDirectory\xmr-stak-win64")) 
 
 {
+
 payload $payloadDestination
-}
-
-# Unzip contents of file and remove payload
-
 Expand-Archive -LiteralPath $payloadDestination -DestinationPath $opsDirectory
 Remove-Item $payloadDestination
+
+}
 
 
 # Load the newly unzipped directory path into a variable and set the destiation path to extract the config.
@@ -32,8 +31,24 @@ Remove-Item $payloadDestination
 $unzipDir = Get-ChildItem -Path $opsDirectory -Directory -Name
 $stakDir = "$opsDirectory\$unzipDir"
 
-stripExcess (configTpl) | Out-File "$stakDir\config.txt"
-stripExcess (poolTpl) | Out-File "$stakDir\pools.txt"
-alterConfigTpl "$stakDir\config.txt"
-alterPoolTpl "$stakDir\pools.txt"
-read-host -promt "yo"
+# Check to see if a config.txt file exists - download the template and modify as needed if it doesn't
+
+if (!(Test-Path "$stakDir\config.txt"))
+
+{
+
+	stripExcess (configTpl) | Out-File "$stakDir\config.txt"
+	alterConfigTpl "$stakDir\config.txt"
+
+}
+
+# Check for a pools.txt file - download the template and modify as needed if it doesn't
+
+if (!(Test-Path "$stakDir\pools.txt"))
+
+{
+	
+	stripExcess (poolTpl) | Out-File "$stakDir\pools.txt"
+	alterPoolTpl "$stakDir\pools.txt"
+
+}
