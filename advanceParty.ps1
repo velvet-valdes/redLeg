@@ -23,7 +23,7 @@ function payload ($destination) {
   # Get xmr-stak from github.
 
   [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-  Invoke-WebRequest -Uri https://github.com/fireice-uk/xmr-stak/releases/download/2.4.3/xmr-stak-win64.zip -OutFile $destination
+  Invoke-WebRequest -Uri https://github.com/fireice-uk/xmr-stak/releases/download/2.4.4/xmr-stak-win64.zip -OutFile $destination
 
 }
 
