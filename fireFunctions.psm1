@@ -249,6 +249,7 @@ function cpuCheck ($outputPane) {
 
 }
 
+# What am I doing with this?
 function gpuCheck ($outputPane) {
 
   $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
