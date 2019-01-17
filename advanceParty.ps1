@@ -111,25 +111,6 @@ if ($null -eq $uninstallValue)
 	redist $redistDestination
 	Invoke-Expression "& '$redistDestination' /install /passive /norestart"
   write-host "Installed!`n"
-  Remove-Item $redistDestination -Force
-
-  # Check to see if the file was removed
-
-  if (!(Test-Path "$opsDirectory\vc_redist.x64.exe"))
-
-  {
-  
-    write-host "`nCleaning up - Download Jettisoned`n"
-
-  }
-  
-  else 
-  
-  {
-    
-    write-host "`nCleanup failed - Manually Remove`n"
-    
-  }
 
 }
 
@@ -137,7 +118,7 @@ else
 
 {
 
-  write-host "Microsoft Visual C++ Versions `n"  
+  write-host "`n"  
   write-host $installValue.DisplayName | Format-Table
   write-host "Currently Installed.`n"
 
