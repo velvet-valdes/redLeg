@@ -100,7 +100,7 @@ if (!(Test-Path $opsDirectory))
 # Check to see if the Visual C++ Redistributable is installed
 
 $redistDestination = "$opsDirectory\vc_redist.x64.exe"
-$uninstallValue = Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion | Where-Object { $_.DisplayName -like '*Microsoft Visual C++*' } | Where-Object DisplayVersion -gt 14.16.27024
+$uninstallValue = Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion | Where-Object { $_.DisplayName -like '*Microsoft Visual C++*' } | Where-Object DisplayVersion -gt 14.16.27023
 $installValue = Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion | Where-Object { $_.DisplayName -like '*Microsoft Visual C++*' }
 
 if ($null -eq $uninstallValue) 
