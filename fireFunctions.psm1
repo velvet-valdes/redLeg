@@ -50,7 +50,7 @@ function fireMission ($outputPane,$progressBar) {
     [int]$Percentage = ($counter / $hostList.count) * 100
     $ProgressBar.Value = $Percentage
     $outputPane.text += "$client - Firing...`n"
-    $cmdstring = "invoke-command -computername $client -scriptblock {write-host 'I am' $client ; & ‘$opsDir\xmr-stak-win64-2.8.2\xmr-stak.exe’ -c '$opsDir\xmr-stak-win64-2.7.1\config.txt' -C '$opsDir\xmr-stak-win64-2.7.1\pools.txt' --cpu '$opsDir\xmr-stak-win64-2.7.1\cpu.txt' --amd '$opsDir\xmr-stak-win64-2.7.1\amd.txt' --nvidia '$opsDir\xmr-stak-win64-2.7.1\nvidia.txt'}"
+    $cmdstring = "invoke-command -computername $client -scriptblock {write-host 'I am' $client ; & ‘$opsDir\xmr-stak-win64-2.8.2\xmr-stak.exe’ -c '$opsDir\xmr-stak-win64-2.8.2\config.txt' -C '$opsDir\xmr-stak-win64-2.8.2\pools.txt' --cpu '$opsDir\xmr-stak-win64-2.8.2\cpu.txt' --amd '$opsDir\xmr-stak-win64-2.8.2\amd.txt' --nvidia '$opsDir\xmr-stak-win64-2.8.2\nvidia.txt'}"
     $scriptBlock = [scriptblock]::Create($cmdstring)
     Start-Process powershell -ArgumentList "-command  $Scriptblock"
 
