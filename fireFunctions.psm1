@@ -1,6 +1,9 @@
 ﻿# Global Varibles
 
 $searchBase = New-Object System.Collections.Generic.List[System.Object]
+$stakVersion = "2.8.3"
+$stakName = "xmr-stak-win64"
+$distName = "vc_redist.x64.exe"
 
 # Main Functions
 
@@ -147,6 +150,9 @@ function setGrid ($outputPane,$textBox_filter,$textBox_OpsDir) {
     ap = $advanceParty
     Target = $filterTarget
     search = $searchBase
+    stakVersion = $stakVersion
+    stakName = $stakName
+    distName = $distName
 
   }
   $storedSettings | ConvertTo-Json | Out-File $configPath
