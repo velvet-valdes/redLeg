@@ -1,6 +1,7 @@
 ﻿# Global Varibles
 
 $searchBase = New-Object System.Collections.Generic.List[System.Object]
+
 $stakVersion = "2.8.3"
 $stakName = "xmr-stak-win64"
 $distName = "vc_redist.x64.exe"
@@ -74,6 +75,14 @@ function poolTpl () { #change to point at ops cache and rename function
   Invoke-RestMethod -Uri $payloadURI -OutFile $destination
 
 }
+
+function ammoDump ($cache) {
+
+  # Create new SMB share: path will be the ops directory variable.  This is done on the FDC side.
+  New-SmbShare -Name "ops_cache" -Path $cache -Temporary
+
+}
+
 function fireBase ($outputPane,$progressBar) {
 
   $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
