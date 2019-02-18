@@ -43,6 +43,37 @@ function redist ($cache, $distName) {
 
 }
 
+function configTpl ($cache) { #change to point at ops cache and rename function
+
+  # Get config template from github
+  $name = "config.tpl"
+  $link = "https://raw.githubusercontent.com/fireice-uk/xmr-stak/master/xmrstak/"
+  $payloadURI = "$link" + "$name"
+  $destination = $cache + "\" + "$name"
+
+  Write-Host $payloadURI
+  Write-Host $destination
+  
+  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+  Invoke-RestMethod -Uri $payloadURI -OutFile $destination
+
+}
+
+function poolTpl () { #change to point at ops cache and rename function
+
+  # Get pool template from github
+  $name = "pools.tpl"
+  $link = "https://raw.githubusercontent.com/fireice-uk/xmr-stak/master/xmrstak/"
+  $payloadURI = "$link" + "$name"
+  $destination = $cache + "\" + "$name"
+
+  Write-Host $payloadURI
+  Write-Host $destination
+  
+  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+  Invoke-RestMethod -Uri $payloadURI -OutFile $destination
+
+}
 function fireBase ($outputPane,$progressBar) {
 
   $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
