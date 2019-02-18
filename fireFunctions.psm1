@@ -4,8 +4,44 @@ $searchBase = New-Object System.Collections.Generic.List[System.Object]
 $stakVersion = "2.8.3"
 $stakName = "xmr-stak-win64"
 $distName = "vc_redist.x64.exe"
+$cache = "${psscriptroot}\ops_cache"
 
 # Main Functions
+
+function payload ($cache, $stakVersion, $stakName) {
+
+  # Get xmr-stak from github.
+
+  $version = $stakVersion
+  $name = $stakName + "-" + $version + ".zip"
+  $link = "https://github.com/fireice-uk/xmr-stak/releases/download/"
+  $payloadURI = "$link" + "$version" + "/" + "$name"
+  $destination = $cache + "\" + "$name"
+
+  Write-Host $payloadURI
+  Write-Host $destination
+
+  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+  Invoke-WebRequest -Uri $payloadURI -OutFile $destination
+
+}
+
+function redist ($cache, $distName) {
+
+  # Get Visual C++ Redistributable
+
+  $name = $distName
+  $link = "https://aka.ms/vs/15/release/"
+  $payloadURI = "$link" + "$name"
+  $destination = $cache + "\" + "$name"
+
+  Write-Host $payloadURI
+  Write-Host $destination
+
+  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+  Invoke-WebRequest -Uri $payloadURI -OutFile $destination
+
+}
 
 function fireBase ($outputPane,$progressBar) {
 
