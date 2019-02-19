@@ -1,13 +1,11 @@
 ﻿Import-Module "${psscriptroot}\fireFunctions.psm1"
-Import-Module "${psscriptroot}\statFunctions.psm1"
-Import-Module "${psscriptroot}\artFunctions.psm1"
 
 Add-Type -AssemblyName System.Windows.Forms
 [System.Windows.Forms.Application]::EnableVisualStyles()
 
 $redLeg                          = New-Object system.Windows.Forms.Form
 $redLeg.ClientSize               = '1200,675'
-$redLeg.text                     = "gridCoordinates"
+$redLeg.text                     = "redLeg"
 $redLeg.TopMost                  = $false
 
 $outputPane                      = New-Object system.Windows.Forms.Label
