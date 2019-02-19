@@ -1,17 +1,20 @@
 ﻿# Global Varibles
 
 $searchBase = New-Object System.Collections.Generic.List[System.Object]
-
 $stakVersion = "2.8.3"
 $stakName = "xmr-stak-win64"
 $distName = "vc_redist.x64.exe"
-$cache = "${psscriptroot}\ops_cache"
 
 # Main Functions
 
-function payload ($cache, $stakVersion, $stakName) {
+function payload () {
 
   # Get xmr-stak from github.
+  $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
+  $cache = "${psscriptroot}\ops_cache"
+  $missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
+  $stakName = $missionParameters.stakName
+  $stakVersion = $missionParameters.stakVersion
 
   $version = $stakVersion
   $name = $stakName + "-" + $version + ".zip"
@@ -27,9 +30,13 @@ function payload ($cache, $stakVersion, $stakName) {
 
 }
 
-function redist ($cache, $distName) {
+function redist () {
 
   # Get Visual C++ Redistributable
+  $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
+  $cache = "${psscriptroot}\ops_cache"
+  $missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
+  $distName = $missionParameters.distName
 
   $name = $distName
   $link = "https://aka.ms/vs/15/release/"
@@ -60,7 +67,7 @@ function configTpl ($cache) { #change to point at ops cache and rename function
 
 }
 
-function poolTpl () { #change to point at ops cache and rename function
+function poolTpl ($cache) { #change to point at ops cache and rename function
 
   # Get pool template from github
   $name = "pools.tpl"
@@ -76,10 +83,33 @@ function poolTpl () { #change to point at ops cache and rename function
 
 }
 
-function ammoDump ($cache) {
+function ammoDump () {
+
+  $cache = "${psscriptroot}\ops_cache"
+  Write-Host $cache
+  
+  
+  if (!(Test-Path $cache))
+
+{
+
+  mkdir $cache
+  $f = Get-Item $cache -Force
+  $f.Attributes = "Hidden"
+
+}
 
   # Create new SMB share: path will be the ops directory variable.  This is done on the FDC side.
-  New-SmbShare -Name "ops_cache" -Path $cache -Temporary
+  IF (!(GET-SMBShare -Name "ops_cache"))
+  {
+    New-SmbShare -Name "ops_cache" -Path $cache -Temporary
+  } 
+
+  payload
+  redist
+  # configTpl ## setup path to write template to
+  # poolTpl ## setup path to write tempate to
+
 
 }
 
