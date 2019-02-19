@@ -8,13 +8,17 @@ $redLeg.ClientSize               = '1200,675'
 $redLeg.text                     = "redLeg"
 $redLeg.TopMost                  = $false
 
-$outputPane                      = New-Object system.Windows.Forms.Label
+$outputPane = New-Object system.Windows.Forms.RichTextBox
+$outputPane.Multiline            = $true
+$outputPane.WordWrap             = $false
+$outputPane.EnableAutoDragDrop   = $true
 $outputPane.BackColor            = "#000000"
+$outputPane.BorderStyle          = 'Fixed3D'
 $outputPane.AutoSize             = $false
 $outputPane.width                = 750
 $outputPane.height               = 450
 $outputPane.location             = New-Object System.Drawing.Point(400,40)
-$outputPane.Font                 = 'Microsoft Sans Serif,10'
+$outputPane.Font                 = 'Courier,10'
 $outputPane.ForeColor            = "#b8e986"
 
 $textBox_OpsDir                  = New-Object system.Windows.Forms.TextBox
