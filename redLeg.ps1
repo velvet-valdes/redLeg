@@ -163,7 +163,7 @@ $ceaseFire.Add_Click({ ceaseFire $outputPane $progressBar })
 $fireMission.Add_Click({ fireMission $outputPane $progressBar })
 $cycleGunline.Add_Click({ cycleGunline $outputPane $progressBar })
 $moveOut.Add_Click({ moveOut $outputPane $progressBar })
-$ammoDump.Add_Click({ ammoDump })
+$ammoDump.Add_Click({ ammoDump $outputPane $progressBar})
 
 # Display the Form
 
