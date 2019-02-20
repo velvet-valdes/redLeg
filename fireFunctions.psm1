@@ -97,48 +97,45 @@ function ammoDump ($outputPane,$progressBar) {
   $stakVersion = $missionParameters.stakVersion
   $distName = $missionParameters.distName
   $payloadName = $stakName + "-" + $stakVersion + ".zip"
+  showAmmoDump $outputPane
   
-  if (!(Test-Path $cache))
-
-{
-
-  mkdir $cache
-  $f = Get-Item $cache -Force
-  $f.Attributes = "Hidden"
-
-}
+  if (!(Test-Path $cache)) {
+    $outputPane.text +=  "`nCreating cache..."
+    mkdir $cache
+    $f = Get-Item $cache -Force
+    $f.Attributes = "Hidden"
+  } else { $outputPane.text +=  "`nDirectory present..."}
 
   if (!(test-path "$cache\config.tpl")) {
-    write-host "`nNo config, downloading... `n" 
+    $outputPane.text +=  "`nNo config, downloading..." 
     configTpl 
-  } else { write-host "`nConfig..."}
+  } else { $outputPane.text +=  "`nConfig is GO!"}
 
   if (!(test-path "$cache\pools.tpl")) {
-    write-host "`nNo pool, downloading... `n" 
+    $outputPane.text +=  "`nNo pool, downloading..." 
     poolTpl 
-  } else { write-host "`nPool..."}
+  } else { $outputPane.text +=  "`nPool is GO!"}
 
-
-  
   if (!(test-path "$cache\$distName")) {
-    write-host "`nNo Microsoft Visual C++ ReDistributable, downloading... `n" 
+    $outputPane.text +=  "`nNo Microsoft Visual C++ ReDistributable, downloading..." 
     redist
-  } else { write-host "`nC++..."}
+  } else { $outputPane.text +=  "`nC++ is GO!"}
 
   if (!(test-path "$cache\$payloadName")) {
-    write-host "`nNo XMR-Stak, downloading... `n" 
+    $outputPane.text +=  "`nNo XMR-Stak, downloading..." 
     payload
-  } else { write-host "`nXMRStak..."}
+  } else { $outputPane.text +=  "`nXMR-Stak is GO!"}
 
-  if (!(GET-SMBShare -Name "ops_cache"))
-  {
-    write-host "`nCreating SMB share..."
+  if (!(GET-SMBShare -Name "ops_cache")) {
+    $outputPane.text +=  "`nCreating SMB share...`n"
     New-SmbShare -Name "ops_cache" -Path $cache -Temporary
-  } else { write-host "`nSMB share exists..."}
-
+  } else { $outputPane.text +=  "`nSMB share exists...`n"}
+  $outputPane.text += "`nAmmo Dump Established!"
 }
 
-function fireBase ($outputPane,$progressBar) {
+function fireBase ($outputPane,$progressBar) {c
+
+  #check for $ops_cache directory and call ammoDump if it doesn't
 
   $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
   $missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
@@ -274,6 +271,7 @@ function setGrid ($outputPane,$textBox_filter,$textBox_OpsDir) {
   $opsDir = $textBox_OpsDir.text
   $configPath = "${psscriptroot}\fireDirectionalControl.json"
   $advanceParty = "${psscriptroot}\advanceParty.ps1"
+  $headQuarters = hostname
   $storedSettings = @{
 
     ops = $opsDir
@@ -284,6 +282,7 @@ function setGrid ($outputPane,$textBox_filter,$textBox_OpsDir) {
     stakVersion = $stakVersion
     stakName = $stakName
     distName = $distName
+    phoneHome = $headQuarters
 
   }
   $storedSettings | ConvertTo-Json | Out-File $configPath
@@ -307,7 +306,6 @@ function pushGrid ($outputPane,$textBox_OU) {
 }
 
 function popGrid ($outputPane,$textBox_OU) {
-
 
   $searchBase.RemoveAt($searchBase.count - 1)
   showGridCheck $outputpane
@@ -354,7 +352,7 @@ function moveOut ($outputPane,$progressBar) {
   $outputPane.text += "`n`nGUNLINE OUT!"
 
 }
-
+# What am I doing with this?
 function cpuCheck ($outputPane) {
 
   $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
@@ -593,5 +591,23 @@ function showRedLeg ($outputPane) {
 .▀  ▀ ▀▀▀ ▀▀▀▀▀• .▀▀▀  ▀▀▀ ·▀▀▀▀ 
 "
   $outputPane.text = $logoASCIIredLeg
+
+}
+
+function showAmmoDump ($outputPane) {
+
+  $logoASCIIammoDump = "
+  ▄▄▄· • ▌ ▄ ·. • ▌ ▄ ·.       
+  ▐█ ▀█ ·██ ▐███▪·██ ▐███▪▪     
+  ▄█▀▀█ ▐█ ▌▐▌▐█·▐█ ▌▐▌▐█· ▄█▀▄ 
+  ▐█ ▪▐▌██ ██▌▐█▌██ ██▌▐█▌▐█▌.▐▌
+   ▀  ▀ ▀▀  █▪▀▀▀▀▀  █▪▀▀▀ ▀█▄▀▪
+  ·▄▄▄▄  ▄• ▄▌• ▌ ▄ ·.  ▄▄▄·    
+  ██▪ ██ █▪██▌·██ ▐███▪▐█ ▄█    
+  ▐█· ▐█▌█▌▐█▌▐█ ▌▐▌▐█· ██▀·    
+  ██. ██ ▐█▄█▌██ ██▌▐█▌▐█▪·•    
+  ▀▀▀▀▀•  ▀▀▀ ▀▀  █▪▀▀▀.▀       
+"
+  $outputPane.text = $logoASCIIammoDump
 
 }
