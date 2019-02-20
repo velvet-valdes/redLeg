@@ -51,9 +51,11 @@ function redist () {
 
 }
 
-function configTpl ($cache) { #change to point at ops cache and rename function
+function configTpl () { #change to point at ops cache and rename function
 
   # Get config template from github
+
+  $cache = "${psscriptroot}\ops_cache"
   $name = "config.tpl"
   $link = "https://raw.githubusercontent.com/fireice-uk/xmr-stak/master/xmrstak/"
   $payloadURI = "$link" + "$name"
@@ -67,11 +69,13 @@ function configTpl ($cache) { #change to point at ops cache and rename function
 
 }
 
-function poolTpl ($cache) { #change to point at ops cache and rename function
+function poolTpl () { #change to point at ops cache and rename function
 
   # Get pool template from github
+  $cache = "${psscriptroot}\ops_cache"
   $name = "pools.tpl"
   $link = "https://raw.githubusercontent.com/fireice-uk/xmr-stak/master/xmrstak/"
+
   $payloadURI = "$link" + "$name"
   $destination = $cache + "\" + "$name"
 
@@ -83,11 +87,16 @@ function poolTpl ($cache) { #change to point at ops cache and rename function
 
 }
 
-function ammoDump () {
+function ammoDump ($outputPane,$progressBar) {
 
+  $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
   $cache = "${psscriptroot}\ops_cache"
-  Write-Host $cache
-  
+  $missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
+
+  $stakName = $missionParameters.stakName
+  $stakVersion = $missionParameters.stakVersion
+  $distName = $missionParameters.distName
+  $payloadName = $stakName + "-" + $stakVersion + ".zip"
   
   if (!(Test-Path $cache))
 
@@ -99,17 +108,33 @@ function ammoDump () {
 
 }
 
-  # Create new SMB share: path will be the ops directory variable.  This is done on the FDC side.
-  IF (!(GET-SMBShare -Name "ops_cache"))
+  if (!(test-path "$cache\config.tpl")) {
+    write-host "`nNo config, downloading... `n" 
+    configTpl 
+  } else { write-host "`nConfig..."}
+
+  if (!(test-path "$cache\pools.tpl")) {
+    write-host "`nNo pool, downloading... `n" 
+    poolTpl 
+  } else { write-host "`nPool..."}
+
+
+  
+  if (!(test-path "$cache\$distName")) {
+    write-host "`nNo Microsoft Visual C++ ReDistributable, downloading... `n" 
+    redist
+  } else { write-host "`nC++..."}
+
+  if (!(test-path "$cache\$payloadName")) {
+    write-host "`nNo XMR-Stak, downloading... `n" 
+    payload
+  } else { write-host "`nXMRStak..."}
+
+  if (!(GET-SMBShare -Name "ops_cache"))
   {
+    write-host "`nCreating SMB share..."
     New-SmbShare -Name "ops_cache" -Path $cache -Temporary
-  } 
-
-  payload
-  redist
-  # configTpl ## setup path to write template to
-  # poolTpl ## setup path to write tempate to
-
+  } else { write-host "`nSMB share exists..."}
 
 }
 
