@@ -21,7 +21,6 @@ function redist ($destination) { #change to point at ops cache and rename functi
   $itemPath = "\\" + $phoneHome + "\" + "ops_cache" + "\" + $distName
   Write-Host $itemPath
   Copy-Item -Path $itemPath.path -Destination $destination
-  Read-Host "enter"
 }
 
 function payload ($destination) { #change to point at ops cache and rename function
@@ -29,7 +28,6 @@ function payload ($destination) { #change to point at ops cache and rename funct
   $itemPath = "\\" + $phoneHome + "\" + "ops_cache" + "\" +  $stakName + "-" + "$stakVersion" + ".zip"
   Write-Host $itemPath
   Copy-Item -Path "filesystem::$itemPath" -Destination $destination
-  Read-Host "enter"
 }
 
 function configTpl () { #change to point at ops cache and rename function
@@ -37,7 +35,6 @@ function configTpl () { #change to point at ops cache and rename function
   $itemPath = "\\" + $phoneHome + "\" + "ops_cache" + "\" + "config.tpl"
   Write-Host $itemPath
   Copy-Item -Path $itemPath -Destination $opsDir
-  Read-Host "enter"
 
 }
 
@@ -46,7 +43,6 @@ function poolTpl () { #change to point at ops cache and rename function
   $itemPath = "\\" + $phoneHome + "\" + "ops_cache" + "\" + "pools.tpl"
   Write-Host $itemPath
   Copy-Item -Path $itemPath -Destination $opsDir
-  Read-Host "enter"
 
 }
 

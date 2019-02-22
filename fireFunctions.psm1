@@ -101,6 +101,8 @@ function ammoDump ($outputPane,$progressBar) {
   $distName = $missionParameters.distName
   $payloadName = $stakName + "-" + $stakVersion + ".zip"
   showAmmoDump $outputPane
+
+  if (!(Test-Path $fireDirectionalControl)) { $outputPane.text += "`nWrite configuration parameters before proceeding!"} else {
   
   if (!(Test-Path $cache)) {
     $outputPane.text +=  "`nCreating cache..."
@@ -134,6 +136,9 @@ function ammoDump ($outputPane,$progressBar) {
     New-SmbShare -Name "ops_cache" -Path $cache -Temporary
   } else { $outputPane.text +=  "`nSMB share exists...`n"}
   $outputPane.text += "`nAmmo Dump Established!"
+
+}
+
 }
 
 function fireBase ($outputPane,$progressBar) {
@@ -154,7 +159,7 @@ function fireBase ($outputPane,$progressBar) {
   $hostList = $searchbase | ForEach-Object { Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $_.distinguishedname } | Select-Object Name
   showFireBase $outputPane
 
-  
+  if (!(Test-Path $fireDirectionalControl)) { $outputPane.text += "`nWrite configuration parameters before proceeding!"} else {
 
   foreach ($client in $hostList.Name)
 
@@ -172,6 +177,9 @@ function fireBase ($outputPane,$progressBar) {
 
   $outputPane.text += "`n`nBASE ESTABLISHED!"
 
+
+}
+
 }
 
 function fireMission ($outputPane,$progressBar) {
@@ -181,8 +189,14 @@ function fireMission ($outputPane,$progressBar) {
   $searchbase = $missionParameters.search
   $filterTarget = $missionParameters.target
   $opsDir = $missionParameters.ops
+  $stakName = $missionParameters.stakName
+  $stakVersion = $missionParameters.stakVersion
+  $cannonPath = $opsDir + "\" + $stakName + "-" + $stakVersion
   $hostList = $searchbase | ForEach-Object { Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $_.distinguishedname } | Select-Object Name
   showFireMission $outputPane
+
+  if (!(Test-Path $fireDirectionalControl)) { $outputPane.text += "`nWrite configuration parameters before proceeding!"} else {
+
   foreach ($client in $hostList.Name)
 
   {
@@ -191,13 +205,15 @@ function fireMission ($outputPane,$progressBar) {
     [int]$Percentage = ($counter / $hostList.count) * 100
     $ProgressBar.Value = $Percentage
     $outputPane.text += "$client - Firing...`n"
-    $cmdstring = "invoke-command -computername $client -scriptblock {write-host 'I am' $client ; & ‘$opsDir\xmr-stak-win64-2.8.2\xmr-stak.exe’ -c '$opsDir\xmr-stak-win64-2.8.2\config.txt' -C '$opsDir\xmr-stak-win64-2.8.2\pools.txt' --cpu '$opsDir\xmr-stak-win64-2.8.2\cpu.txt' --amd '$opsDir\xmr-stak-win64-2.8.2\amd.txt' --nvidia '$opsDir\xmr-stak-win64-2.8.2\nvidia.txt'}"
+    $cmdstring = "invoke-command -computername $client -scriptblock {write-host 'I am' $client ; & ‘$cannonPath\xmr-stak.exe’ -c '$cannonPath\config.txt' -C '$cannonPath\pools.txt' --cpu '$cannonPath\cpu.txt' --amd '$cannonPath\amd.txt' --nvidia '$cannonPath\nvidia.txt'}"
     $scriptBlock = [scriptblock]::Create($cmdstring)
     Start-Process powershell -ArgumentList "-command  $Scriptblock"
 
   }
 
   $outputPane.text += "`n`nFIRE FOR EFFECT!"
+
+}
 
 }
 
@@ -210,6 +226,8 @@ function ceaseFire ($outputPane,$progressBar) {
   #$opsDir = $missionParameters.ops
   $hostList = $searchbase | ForEach-Object { Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $_.distinguishedname } | Select-Object Name
   showCeaseFire $outputPane
+
+  if (!(Test-Path $fireDirectionalControl)) { $outputPane.text += "`nWrite configuration parameters before proceeding!"} else {
 
   foreach ($client in $hostList.Name)
 
@@ -229,6 +247,8 @@ function ceaseFire ($outputPane,$progressBar) {
 
 }
 
+}
+
 function cycleGunline ($outputPane,$progressBar) {
 
   $fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
@@ -237,6 +257,8 @@ function cycleGunline ($outputPane,$progressBar) {
   $searchbase = $missionParameters.search
   $hostList = $searchbase | ForEach-Object { Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $_.distinguishedname } | Select-Object Name
   showCycleGunline $outputPane
+
+  if (!(Test-Path $fireDirectionalControl)) { $outputPane.text += "`nWrite configuration parameters before proceeding!"} else {
 
   foreach ($client in $hostList.Name)
 
@@ -252,6 +274,8 @@ function cycleGunline ($outputPane,$progressBar) {
   }
 
   $outputPane.text += "`n`nGUNLINE CYCLED!"
+
+}
 
 }
 
@@ -347,6 +371,8 @@ function moveOut ($outputPane,$progressBar) {
   $hostList = $searchbase | ForEach-Object { Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $_.distinguishedname } | Select-Object Name
   showMoveOut $outputPane
 
+  if (!(Test-Path $fireDirectionalControl)) { $outputPane.text += "`nWrite configuration parameters before proceeding!"} else {
+
   foreach ($client in $hostList.Name)
 
   {
@@ -362,6 +388,8 @@ function moveOut ($outputPane,$progressBar) {
   }
 
   $outputPane.text += "`n`nGUNLINE OUT!"
+
+}
 
 }
 # What am I doing with this?
