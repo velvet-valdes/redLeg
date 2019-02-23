@@ -133,7 +133,7 @@ function ammoDump ($outputPane,$progressBar) {
 
   if (!(GET-SMBShare -Name "ops_cache")) {
     $outputPane.text +=  "`nCreating SMB share...`n"
-    New-SmbShare -Name "ops_cache" -Path $cache -Temporary –FullAccess “domain\authenticated users”
+    New-SmbShare -Name "ops_cache" -Path $cache -Temporary
     read-host
   } else { $outputPane.text +=  "`nSMB share exists...`n"}
   $outputPane.text += "`nAmmo Dump Established!"
