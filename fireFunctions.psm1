@@ -109,32 +109,37 @@ function ammoDump ($outputPane,$progressBar) {
     mkdir $cache
     $f = Get-Item $cache -Force
     $f.Attributes = "Hidden"
+    $outputPane.text +=  "`nDone!"
   } else { $outputPane.text +=  "`nDirectory present..."}
 
   if (!(test-path "$cache\config.tpl")) {
     $outputPane.text +=  "`nNo config, downloading..." 
     configTpl 
+    $outputPane.text +=  "`nDone!"
   } else { $outputPane.text +=  "`nConfig is GO!"}
 
   if (!(test-path "$cache\pools.tpl")) {
     $outputPane.text +=  "`nNo pool, downloading..." 
     poolTpl 
+    $outputPane.text +=  "`nDone!"
   } else { $outputPane.text +=  "`nPool is GO!"}
 
   if (!(test-path "$cache\$distName")) {
     $outputPane.text +=  "`nNo Microsoft Visual C++ ReDistributable, downloading..." 
     redist
+    $outputPane.text +=  "`nDone!"
   } else { $outputPane.text +=  "`nC++ is GO!"}
 
   if (!(test-path "$cache\$payloadName")) {
     $outputPane.text +=  "`nNo XMR-Stak, downloading..." 
     payload
+    $outputPane.text +=  "`nDone!"
   } else { $outputPane.text +=  "`nXMR-Stak is GO!"}
 
   if (!(GET-SMBShare -Name "ops_cache")) {
     $outputPane.text +=  "`nCreating SMB share...`n"
     New-SmbShare -Name "ops_cache" -Path $cache -Temporary
-    read-host
+    $outputPane.text +=  "`nDone!"
   } else { $outputPane.text +=  "`nSMB share exists...`n"}
   $outputPane.text += "`nAmmo Dump Established!"
 
