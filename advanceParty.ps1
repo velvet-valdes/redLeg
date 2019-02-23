@@ -16,23 +16,42 @@ param(
 
 # Advance Party functions
 
+function stashDrive {
+
+  $callBack = ""\\" + $phoneHome + "\" + "ops_cache""
+  write-host $callBack
+  New-PSDrive -Name "stash" -PSProvider FileSystem -Root $callBack
+  Get-PSDrive
+  read-host
+
+}
+
+function smashStashDrive {
+
+  Remove-PSDrive -Name "stash" -Force
+
+}
+
 function redist ($destination) { #change to point at ops cache and rename function
   
-  $itemPath = "\\" + $phoneHome + "\" + "ops_cache" + "\" + $distName
+  #$itemPath = "\\" + $phoneHome + "\" + "ops_cache" + "\" + $distName
+  $itemPath = "stash:\" + $distName
   Write-Host $itemPath
   Copy-Item -Path $itemPath.path -Destination $destination
 }
 
 function payload ($destination) { #change to point at ops cache and rename function
 
-  $itemPath = "\\" + $phoneHome + "\" + "ops_cache" + "\" +  $stakName + "-" + "$stakVersion" + ".zip"
+  #$itemPath = "\\" + $phoneHome + "\" + "ops_cache" + "\" +  $stakName + "-" + "$stakVersion" + ".zip"
+  $itemPath = "stash:\" + $stakName + "-" + "$stakVersion" + ".zip"
   Write-Host $itemPath
-  Copy-Item -Path "filesystem::$itemPath" -Destination $destination
+  Copy-Item -Path $itemPath -Destination $destination
 }
 
 function configTpl () { #change to point at ops cache and rename function
 
-  $itemPath = "\\" + $phoneHome + "\" + "ops_cache" + "\" + "config.tpl"
+  #$itemPath = "\\" + $phoneHome + "\" + "ops_cache" + "\" + "config.tpl"
+  $itemPath = "stash:\" + "config.tpl"
   Write-Host $itemPath
   Copy-Item -Path $itemPath -Destination $opsDir
 
@@ -40,7 +59,8 @@ function configTpl () { #change to point at ops cache and rename function
 
 function poolTpl () { #change to point at ops cache and rename function
 
-  $itemPath = "\\" + $phoneHome + "\" + "ops_cache" + "\" + "pools.tpl"
+  #$itemPath = "\\" + $phoneHome + "\" + "ops_cache" + "\" + "pools.tpl"
+  $itemPath = "stash:\" + "pools.tpl"
   Write-Host $itemPath
   Copy-Item -Path $itemPath -Destination $opsDir
 
@@ -88,6 +108,10 @@ function alterPoolTpl ($file) {
 # END FUNCTIONS
 
 # BEGIN PARTYING!
+
+# Create the stash drive
+
+stashDrive
 
 # Create an operations directory and hide it.  In the future we will load this variable from another location as this is intended to be called from fireBase.ps1
 
@@ -189,4 +213,8 @@ if (!(Test-Path "$stakDir\pools.txt"))
   write-host "`nPools exist..." 
   Start-Sleep -s 1
         }
+
+# remove the stash drive
+
+smashStashDrive
 
