@@ -37,7 +37,7 @@ function redist ($destination) { #change to point at ops cache and rename functi
   #$itemPath = "\\" + $phoneHome + "\" + "ops_cache" + "\" + $distName
   $itemPath = "stash:\" + $distName
   Write-Host $itemPath
-  Copy-Item -Path $itemPath.path -Destination $destination
+  Copy-Item -Path $itemPath -Destination $destination
 }
 
 function payload ($destination) { #change to point at ops cache and rename function
