@@ -106,10 +106,8 @@ function fireBase ($outputPane,$progressBar) {
 	$fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
 	$missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
 	$opsDir = $missionParameters.ops
-	$filterTarget = $missionParameters.Target
+	$filterTarget = $missionParameters.target
 	$advanceParty = $missionParameters.advanceParty
-	$phoneHome = $missionParameters.phoneHome
-	$cache = $missionParameters.cache
 	$distName = $missionParameters.distName
 	$stakName = $missionParameters.stakName
 	$stakVersion = $missionParameters.stakVersion
@@ -133,7 +131,7 @@ function fireBase ($outputPane,$progressBar) {
 			}
 			if ($folder -eq 0) { Copy-Item "${psscriptroot}\ops_cache" -Destination $opsDir -ToSession $baseSession -Recurse }
 			$outputPane.text += "Complete!`n"
-			$cmdstring = "invoke-command -computername $client -FilePath $advanceParty -ArgumentList $opsDir, $cache, $phoneHome, $distName, $stakName, $stakVersion"
+			$cmdstring = "invoke-command -computername $client -FilePath $advanceParty -ArgumentList $opsDir, $distName, $stakName, $stakVersion"
 			$scriptblock = [scriptblock]::Create($cmdstring)
 			Start-Process powershell -ArgumentList "-command $scriptblock" -RedirectStandardError stderr.txt -RedirectStandardOutput stdout.txt
 		}
@@ -145,7 +143,7 @@ function fireMission ($outputPane,$progressBar) {
 	$fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
 	$missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
 	$searchbase = $missionParameters.search
-	$filterTarget = $missionParameters.Target
+	$filterTarget = $missionParameters.target
 	$opsDir = $missionParameters.ops
 	$stakName = $missionParameters.stakName
 	$stakVersion = $missionParameters.stakVersion
@@ -171,7 +169,7 @@ function ceaseFire ($outputPane,$progressBar) {
 	$fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
 	$missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
 	$searchbase = $missionParameters.search
-	$filterTarget = $missionParameters.Target
+	$filterTarget = $missionParameters.target
 	$hostList = $searchbase | ForEach-Object { Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $_.distinguishedname } | Select-Object Name
 	showCeaseFire $outputPane
 	if (!(Test-Path $fireDirectionalControl)) { $outputPane.text += "`nWrite configuration parameters before proceeding!" } else {
@@ -192,7 +190,7 @@ function ceaseFire ($outputPane,$progressBar) {
 function cycleGunline ($outputPane,$progressBar) {
 	$fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
 	$missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
-	$filterTarget = $missionParameters.Target
+	$filterTarget = $missionParameters.target
 	$searchbase = $missionParameters.search
 	$hostList = $searchbase | ForEach-Object { Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $_.distinguishedname } | Select-Object Name
 	showCycleGunline $outputPane
@@ -217,8 +215,8 @@ function getGrid ($outputPane) {
 	$outputPane.text += $missionParameters.search.Name
 	$outputPane.text += "`n`nSearch Base(s): "
 	$outputPane.text += $missionParameters.search.distinguishedname
-	$outputPane.text += "`n`ntarget Filter String: "
-	$outputPane.text += $missionParameters.Target
+	$outputPane.text += "`n`nTarget Filter String: "
+	$outputPane.text += $missionParameters.target
 	$outputPane.text += "`n`nOperations Directory: "
 	$outputPane.text += $missionParameters.ops
 	$outputPane.text += "`n`nPayload: "
@@ -233,14 +231,12 @@ function setGrid ($outputPane,$textBox_filter,$textBox_OpsDir) {
 	$configPath = "${psscriptroot}\fireDirectionalControl.json"
 	$advanceParty = "${psscriptroot}\advanceParty.ps1"
 	$cache = "${psscriptroot}\ops_cache"
-	$headQuarters = hostname
 	$storedSettings = @{
 		stakName = $stakName
 		stakVersion = $stakVersion
 		distName = $distName
-		phoneHome = $headQuarters
 		search = $searchBase
-		Target = $filterTarget
+		target = $filterTarget
 		cache = $cache
 		ops = $opsDir
 		payload = $opsDir
@@ -283,7 +279,7 @@ function moveOut ($outputPane,$progressBar) {
 	$fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
 	$missionParameters = (Get-Content -Raw -Path $fireDirectionalControl | ConvertFrom-Json)
 	$searchbase = $missionParameters.search
-	$filterTarget = $missionParameters.Target
+	$filterTarget = $missionParameters.target
 	$opsDir = $missionParameters.ops
 	$hostList = $searchbase | ForEach-Object { Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $_.distinguishedname } | Select-Object Name
 	showMoveOut $outputPane

@@ -3,8 +3,6 @@ param(
 	[Parameter(Mandatory = $True,
 		ValueFromPipeline = $True)]
 	[string]$opsDir,
-	[string]$cache,
-	[string]$phoneHome,
 	[string]$distName,
 	[string]$stakName,
 	[string]$stakVersion
@@ -77,5 +75,5 @@ alterPoolTpl "$stakDir\pools.txt"
 # Cleanup the cruft
 Remove-Item "$opsDir\pools.tpl"
 Remove-Item "$opsDir\config.tpl"
-Remove-Item "$opsDir\vc_redist.x64.exe"
+Remove-Item "$opsDir\$distName"
 Remove-Item $payloadDestination
