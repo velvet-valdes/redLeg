@@ -136,11 +136,6 @@ function ammoDump ($outputPane,$progressBar) {
     $outputPane.text +=  "`nDone!"
   } else { $outputPane.text +=  "`nXMR-Stak is GO!"}
 
-  if (!(GET-SMBShare -Name "ops_cache")) {
-    $outputPane.text +=  "`nCreating SMB share...`n"
-    New-SmbShare -Name "ops_cache" -Path $cache -Temporary
-    $outputPane.text +=  "`nDone!"
-  } else { $outputPane.text +=  "`nSMB share exists...`n"}
   $outputPane.text += "`nAmmo Dump Established!"
 
 }
@@ -148,6 +143,7 @@ function ammoDump ($outputPane,$progressBar) {
 }
 
 function fireBase ($outputPane,$progressBar) {
+  
 
   #check for $ops_cache directory and call ammoDump if it doesn't
 
@@ -175,10 +171,24 @@ function fireBase ($outputPane,$progressBar) {
     [int]$Percentage = ($counter / $hostList.count) * 100
     $ProgressBar.Value = $Percentage
     $outputPane.text += "Advance Party en-route to $client...`n"
+
+    $baseSession = New-PSSession -ComputerName $client
+
+    if (Invoke-Command -Session $baseSession -ScriptBlock {Test-Path -path $args[0]} -ArgumentList $opsDir) {
+      $outputPane.text += "Operations directory exists on $client`n" 
+      $folder = 1
+  } else {
+    $outputPane.text += "Operations directory does not exist on $client.  Initiating transfer....`n" 
+    $folder = 0
+  }
+
+    if ($folder -eq 0) { Copy-Item "${psscriptroot}\ops_cache" -Destination $opsDir -ToSession $baseSession -Recurse }
+    
+    $outputPane.text += "Complete!`n"
     $cmdstring = "invoke-command -computername $client -FilePath $advanceParty -ArgumentList $opsDir, $cache, $phoneHome, $distName, $stakName, $stakVersion"
     $scriptblock = [scriptblock]::Create($cmdstring)
-    Start-Process powershell -ArgumentList "-command $Scriptblock"
-
+    Start-Process powershell -ArgumentList "-command $scriptblock" -RedirectStandardError stderr.txt -RedirectStandardOutput stdout.txt
+    
   }
 
   $outputPane.text += "`n`nBASE ESTABLISHED!"
