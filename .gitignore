@@ -1,1 +1,8 @@
 .DS_Store
+stderr.txt
+stdout.txt
+ops_cache/config.tpl
+ops_cache/pools.tpl
+ops_cache/vc_redist.x64.exe
+ops_cache/xmr-stak-win64-2.8.3.zip
+fireDirectionalControl.json
