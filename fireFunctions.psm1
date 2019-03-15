@@ -34,6 +34,7 @@ function redist () {
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 	Invoke-WebRequest -Uri $payloadURI -OutFile $destination
 }
+
 function configTpl () {
 	# Get config template from github
 	$fireDirectionalControl = "${psscriptroot}\fireDirectionalControl.json"
