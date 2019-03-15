@@ -228,6 +228,10 @@ function getGrid ($outputPane) {
 function setGrid ($outputPane,$textBox_filter,$textBox_OpsDir) {
 	$filterTarget = $textBox_filter.text
 	$opsDir = $textBox_OpsDir.text
+	$walletAddress = $textBox_walletAddress.text
+	$currencyType = $textBox_currencyType.text
+	$poolAddress = $textBox_poolAddress.text
+	$poolPort = $textBox_poolPort.text
 	$configPath = "${psscriptroot}\fireDirectionalControl.json"
 	$advanceParty = "${psscriptroot}\advanceParty.ps1"
 	$cache = "${psscriptroot}\ops_cache"
@@ -241,6 +245,10 @@ function setGrid ($outputPane,$textBox_filter,$textBox_OpsDir) {
 		ops = $opsDir
 		payload = $opsDir
 		advanceParty = $advanceParty
+		walletAddress = $walletAddress
+		currencyType = $currencyType
+		poolAddress = $poolAddress
+		poolPort = $poolPort
 	}
 	$storedSettings | ConvertTo-Json | Out-File $configPath
 	showRedLeg $outputPane

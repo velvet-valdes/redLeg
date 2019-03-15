@@ -1,4 +1,10 @@
-﻿# Accept a paramter for the operations directory which is stored in the JSON configbeing passed in via the pipline
+﻿# Replace hard coded wallet address with variable $walletAddress
+# Replace currency type with variable $currencyType
+# Replace pool address with variable $poolAddress
+# Replace pool port with variable $poolPort
+
+# Accept a paramter for the operations directory which is stored in the JSON configbeing passed in via the pipline
+# Update this to include the variables listed above and add them to the fireBase function
 param(
 	[Parameter(Mandatory = $True,
 		ValueFromPipeline = $True)]
