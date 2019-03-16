@@ -1,4 +1,5 @@
 ﻿Import-Module "${psscriptroot}\fireFunctions.psm1"
+Import-Module "${psscriptroot}\asciiGraff.psm1"
 
 Add-Type -AssemblyName System.Windows.Forms
 [System.Windows.Forms.Application]::EnableVisualStyles()
