@@ -138,7 +138,7 @@ function fireBase ($outputPane,$progressBar) {
 			$outputPane.text += "Complete!`n"
 			$cmdstring = "invoke-command -computername $client -FilePath $advanceParty -ArgumentList $opsDir, $distName, $stakName, $stakVersion, $walletAddress, $currencyType, $poolAddress, $poolPort"
 			$scriptblock = [scriptblock]::Create($cmdstring)
-			Start-Process powershell -ArgumentList "-command $scriptblock" -RedirectStandardError stderr.txt -RedirectStandardOutput stdout.txt
+			Start-Process powershell -ArgumentList "-command $scriptblock" -RedirectStandardError stderr.txt
 		}
 		$outputPane.text += "`n`nBASE ESTABLISHED!"
 	}
@@ -164,7 +164,7 @@ function fireMission ($outputPane,$progressBar) {
 			$outputPane.text += "$client - Firing...`n"
 			$cmdstring = "invoke-command -computername $client -scriptblock {write-host 'I am' $client ; & ‘$cannonPath\xmr-stak.exe’ -c '$cannonPath\config.txt' -C '$cannonPath\pools.txt' --cpu '$cannonPath\cpu.txt' --amd '$cannonPath\amd.txt' --nvidia '$cannonPath\nvidia.txt'}"
 			$scriptBlock = [scriptblock]::Create($cmdstring)
-			Start-Process powershell -ArgumentList "-command  $Scriptblock" -RedirectStandardError stderr.txt -RedirectStandardOutput stdout.txt
+			Start-Process powershell -ArgumentList "-command  $Scriptblock" -RedirectStandardError stderr.txt 
 		}
 		$outputPane.text += "`n`nFIRE FOR EFFECT!"
 	}

@@ -41,12 +41,12 @@ function alterConfigTpl ($file) {
 
 function alterPoolTpl ($file) {
 	#alter the pool downloaded pool template and set configuration
-	(Get-Content "$file") | ForEach-Object { $_ -replace "POOLCONF",'{"pool_address" : "DESTINATION:PORT", "wallet_address" : "ACCOUNT", "rig_id" : "", "pool_password" : "COMPUTERNAME", "use_nicehash" : false, "use_tls" : false, "tls_fingerprint" : "", "pool_weight" : 1 },' } | Set-Content "$file"
+	(Get-Content "$file") | ForEach-Object { $_ -replace "POOLCONF",'{"pool_address" : "DESTINATION:DESTPORT", "wallet_address" : "ACCOUNT", "rig_id" : "", "pool_password" : "COMPUTERNAME", "use_nicehash" : false, "use_tls" : false, "tls_fingerprint" : "", "pool_weight" : 1 },' } | Set-Content "$file"
 	(Get-Content "$file") | ForEach-Object { $_ -replace "DESTINATION" , $poolAddress } | Set-Content "$file"
-	(Get-Content "$file") | ForEach-Object { $_ -replace "PORT" , $poolPort } | Set-Content "$file"
+	(Get-Content "$file") | ForEach-Object { $_ -replace "DESTPORT" , $poolPort } | Set-Content "$file"
 	(Get-Content "$file") | ForEach-Object { $_ -replace "ACCOUNT" , $walletAddress } | Set-Content "$file"
 	(Get-Content "$file") | ForEach-Object { $_ -replace "COMPUTERNAME","$env:COMPUTERNAME" } | Set-Content "$file"
-	(Get-Content "$file") | ForEach-Object { $_ -replace '"currency" : "CURRENCY"',"currency : `"$currencyType`"" } | Set-Content "$file"
+	(Get-Content "$file") | ForEach-Object { $_ -replace '"currency" : "CURRENCY"',"`"currency`" : `"$currencyType`"" } | Set-Content "$file"
 	
 }
 
