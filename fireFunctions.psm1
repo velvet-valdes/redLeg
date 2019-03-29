@@ -164,7 +164,7 @@ function fireMission ($outputPane,$progressBar) {
 			$outputPane.text += "$client - Firing...`n"
 			$cmdstring = "invoke-command -computername $client -scriptblock {write-host 'I am' $client ; & ‘$cannonPath\xmr-stak.exe’ -c '$cannonPath\config.txt' -C '$cannonPath\pools.txt' --cpu '$cannonPath\cpu.txt' --amd '$cannonPath\amd.txt' --nvidia '$cannonPath\nvidia.txt'}"
 			$scriptBlock = [scriptblock]::Create($cmdstring)
-			Start-Process powershell -ArgumentList "-command  $Scriptblock"
+			Start-Process powershell -ArgumentList "-command  $Scriptblock" -RedirectStandardError stderr.txt -RedirectStandardOutput stdout.txt
 		}
 		$outputPane.text += "`n`nFIRE FOR EFFECT!"
 	}
