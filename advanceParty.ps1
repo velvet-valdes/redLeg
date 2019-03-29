@@ -1,4 +1,5 @@
-﻿# Replace hard coded wallet address with variable $walletAddress
+﻿    
+# Replace hard coded wallet address with variable $walletAddress
 # Replace currency type with variable $currencyType
 # Replace pool address with variable $poolAddress
 # Replace pool port with variable $poolPort
@@ -11,7 +12,11 @@ param(
 	[string]$opsDir,
 	[string]$distName,
 	[string]$stakName,
-	[string]$stakVersion
+	[string]$stakVersion,
+	[string]$walletAddress,
+	[string]$currencyType,
+	[string]$poolAddress,
+	[string]$poolPort
 )
 
 # Advance Party functions
@@ -36,10 +41,13 @@ function alterConfigTpl ($file) {
 
 function alterPoolTpl ($file) {
 	#alter the pool downloaded pool template and set configuration
-	(Get-Content "$file") | ForEach-Object { $_ -replace '"currency" : "CURRENCY"','"currency" : "aeon7"' } | Set-Content "$file"
-	(Get-Content "$file") | ForEach-Object { $_ -replace "POOLCONF",'{"pool_address" : "pool.aeonminingpool.com:3335", "wallet_address" : "Wmt1MRyhVkffvWShqLBbytMWfdkRhzago6wHn61cgnMEMDEm5HNMsdmBycerj5iJVFjkEDAFcaVDiUxUEea6EvTJ1fhpkFnQc", "rig_id" : "", "pool_password" : "COMPUTERNAME", "use_nicehash" : false, "use_tls" : false, "tls_fingerprint" : "", "pool_weight" : 1 },
-' } | Set-Content "$file"
+	(Get-Content "$file") | ForEach-Object { $_ -replace "POOLCONF",'{"pool_address" : "DESTINATION:PORT", "wallet_address" : "ACCOUNT", "rig_id" : "", "pool_password" : "COMPUTERNAME", "use_nicehash" : false, "use_tls" : false, "tls_fingerprint" : "", "pool_weight" : 1 },' } | Set-Content "$file"
+	(Get-Content "$file") | ForEach-Object { $_ -replace "DESTINATION" , $poolAddress } | Set-Content "$file"
+	(Get-Content "$file") | ForEach-Object { $_ -replace "PORT" , $poolPort } | Set-Content "$file"
+	(Get-Content "$file") | ForEach-Object { $_ -replace "ACCOUNT" , $walletAddress } | Set-Content "$file"
 	(Get-Content "$file") | ForEach-Object { $_ -replace "COMPUTERNAME","$env:COMPUTERNAME" } | Set-Content "$file"
+	(Get-Content "$file") | ForEach-Object { $_ -replace '"currency" : "CURRENCY"',"currency : `"$currencyType`"" } | Set-Content "$file"
+	
 }
 
 # Check to see if the Visual C++ Redistributable is installed
@@ -76,7 +84,16 @@ alterConfigTpl "$stakDir\config.txt"
 # Modify the pools.tpl file and save it to a text file
 $pools = Get-Content "$opsDir\pools.tpl" -Raw
 stripExcess ($pools) | Out-File "$stakDir\pools.txt"
-alterPoolTpl "$stakDir\pools.txt"
+alterPoolTpl "$stakDir\pools.txt" $currencyType
+
+write-host $opsDir
+write-host $distName
+write-host $stakName
+write-host $stakVersion
+write-host $walletAddress
+write-host $currencyType
+write-host $poolAddress
+write-host $poolPort
 
 # Cleanup the cruft
 Remove-Item "$opsDir\pools.tpl"

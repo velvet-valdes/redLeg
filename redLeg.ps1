@@ -225,7 +225,7 @@ $redLeg.controls.AddRange(@($outputPane, $textBox_filter, $label_filter, $textBo
 # GUI Events
 
 $redLeg.Add_Load({ showRedLeg $outputPane; preflightCheck $outputPane; reconGrid $outputPane; })
-$writeConfig.Add_Click({ setGrid $outputPane $textBox_filter $textBox_opsDir })
+$writeConfig.Add_Click({ setGrid $outputPane $textBox_filter $textBox_opsDir $textBox_currencyType $textBox_poolAddress $textBox_poolPort $textBox_walletAddress })
 $readConfig.Add_Click({ readConfig $outputPane })
 $push.Add_Click({ pushGrid $outputPane $textBox_ou })
 $pop.Add_Click({ popGrid $outputPane $textBox_ou })

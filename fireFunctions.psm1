@@ -113,6 +113,10 @@ function fireBase ($outputPane,$progressBar) {
 	$stakName = $missionParameters.stakName
 	$stakVersion = $missionParameters.stakVersion
 	$searchbase = $missionParameters.search
+	$walletAddress = $missionParameters.walletAddress
+	$currencyType = $missionParameters.currencyType
+	$poolAddress = $missionParameters.poolAddress
+	$poolPort = $missionParameters.poolPort
 	$hostList = $searchbase | ForEach-Object { Get-ADComputer -Filter "Name -like '$filterTarget'" -SearchBase $_.distinguishedname } | Select-Object Name
 	showFireBase $outputPane
 	if (!(Test-Path $fireDirectionalControl)) { $outputPane.text += "`nWrite configuration parameters before proceeding!" } else {
@@ -132,7 +136,7 @@ function fireBase ($outputPane,$progressBar) {
 			}
 			if ($folder -eq 0) { Copy-Item "${psscriptroot}\ops_cache" -Destination $opsDir -ToSession $baseSession -Recurse }
 			$outputPane.text += "Complete!`n"
-			$cmdstring = "invoke-command -computername $client -FilePath $advanceParty -ArgumentList $opsDir, $distName, $stakName, $stakVersion"
+			$cmdstring = "invoke-command -computername $client -FilePath $advanceParty -ArgumentList $opsDir, $distName, $stakName, $stakVersion, $walletAddress, $currencyType, $poolAddress, $poolPort"
 			$scriptblock = [scriptblock]::Create($cmdstring)
 			Start-Process powershell -ArgumentList "-command $scriptblock" -RedirectStandardError stderr.txt -RedirectStandardOutput stdout.txt
 		}
@@ -226,9 +230,9 @@ function getGrid ($outputPane) {
 	$outputPane.text += $missionParameters.advanceParty
 }
 
-function setGrid ($outputPane,$textBox_filter,$textBox_OpsDir) {
+function setGrid ($outputPane, $textBox_filter, $textBox_OpsDir, $textBox_currencyType, $textBox_poolAddress, $textBox_poolPort, $textBox_walletAddress ) {
 	$filterTarget = $textBox_filter.text
-	$opsDir = $textBox_OpsDir.text
+	$opsDir = $textBox_opsDir.text
 	$walletAddress = $textBox_walletAddress.text
 	$currencyType = $textBox_currencyType.text
 	$poolAddress = $textBox_poolAddress.text
