@@ -1,6 +1,6 @@
 ﻿# Global Varibles
 $searchBase = New-Object System.Collections.Generic.List[System.Object]
-$stakVersion = "2.10.1"
+$stakVersion = "2.10.7"
 $stakName = "xmr-stak-win64"
 $distName = "vc_redist.x64.exe"
 
